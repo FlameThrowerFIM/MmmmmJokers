@@ -98,7 +98,7 @@ SMODS.Joker {
             end
             if not context.other_card.mxfj_patchwork then
                 context.other_card.mxfj_patchwork = true
-                local _chips = math.floor(context.other_card.base.nominal / 2)
+                local _chips = math.ceil(context.other_card.base.nominal / 2)
                 card.ability.extra = card.ability.extra + _chips
                 return {
                     func = function()
