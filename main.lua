@@ -51,14 +51,14 @@ SMODS.Joker {
         info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
     end,
     calculate = function(self, card, context)
-        if context.cardarea == G.jokers and context.before and no_bp_retrigger(context) then
+        if context.cardarea == G.jokers and context.after and no_bp_retrigger(context) then
             local faces = {}
             for _, v in ipairs(context.scoring_hand) do
                 if v:is_face() then
                     faces[#faces + 1] = v
-                    v:set_ability(G.P_CENTERS.m_stone, nil, true)
                     G.E_MANAGER:add_event(Event({
                         func = function()
+                            v:set_ability(G.P_CENTERS.m_stone)
                             v:juice_up()
                             return true
                         end
@@ -67,8 +67,108 @@ SMODS.Joker {
             end
             if #faces > 0 then
                 return {
-                    message = localize('k_stone'),
+                    message = localize('k_mxfj_stone'),
                     colour = G.C.GREY,
+                }
+            end
+        end
+    end,
+    atlas = "mxfj_sprites"
+}
+
+-- Grave Robber --
+
+SMODS.Joker {
+    key = "grave_robber",
+    name = "Grave Robber",
+    rarity = 2,
+    pos = { x = 1, y = 0 },
+    cost = 6,
+    config = {extra = {dollars = 0, dollar_mod = 2}},
+    loc_vars = function(self, info_queue, card)
+        return {vars = {card.ability.extra.dollar_mod, card.ability.extra.dollars}}
+    end,
+    calc_dollar_bonus = function(self, card)
+        if card.ability.extra.dollars ~= 0 then
+            return card.ability.extra.dollars
+        end
+    end,
+    calculate = function(self, card, context)
+        if (context.cards_destroyed and (context.glass_shattered and #context.glass_shattered > 0))
+        or (context.remove_playing_cards and (context.removed and #context.removed > 0)) and no_bp_retrigger(context) then
+            local _dollars = 0
+            if context.removed then
+                _dollars = _dollars + (card.ability.extra.dollar_mod * #context.removed)
+            end
+            if context.glass_shattered then
+                _dollars = _dollars + (card.ability.extra.dollar_mod * #context.glass_shattered)
+            end
+            card.ability.extra.dollars = card.ability.extra.dollars + _dollars
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    card_eval_status_text(card, 'extra', nil, nil, nil, {
+                        message = "+$" .. _dollars,
+                        colour = G.C.MONEY
+                    })
+                return true
+            end}))
+        end
+        if context.end_of_round and not (context.individual or context.repetition) and no_bp_retrigger(context) then
+            if G.GAME.blind and G.GAME.blind.boss and card.ability.extra.dollars > 0 then
+                card.ability.extra.dollars = math.ceil(card.ability.extra.dollars / 2)
+                card_eval_status_text(card, 'extra', nil, nil, nil, {
+                    message = localize('k_mxfj_halved'),
+                    colour = G.C.RED
+                })
+            end
+        end
+    end,
+    atlas = "mxfj_sprites"
+}
+
+-- Dungeon Jester --
+
+-- SMODS.Joker {
+--     key = "dungeon_jester",
+--     name = "Dungeon Jester",
+--     rarity = 3,
+--     pos = { x = 2, y = 0 },
+--     cost = 8,
+--     config = {extra = 0.5},
+--     loc_vars = function(self, info_queue, card)
+--         return {vars = {card.ability.extra * 100}}
+--     end,
+--     atlas = "mxfj_sprites"
+-- }
+
+-- Crusader --
+
+SMODS.Joker {
+    key = "crusader",
+    name = "Crusader",
+    rarity = 2,
+    pos = { x = 3, y = 0 },
+    cost = 6,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.m_steel
+        return {vars = {localize("Royal Flush", "poker_hands")}}
+    end,
+    calculate = function(self, card, context)
+        if context.cardarea == G.jokers and context.before and context.scoring_hand and no_bp_retrigger(context) then
+            local _, _, _, _, disp_text = G.FUNCS.get_poker_hand_info(context.scoring_hand)
+            if disp_text == "Royal Flush" then
+                for _, v in ipairs(context.scoring_hand) do
+                    v:set_ability(G.P_CENTERS.m_steel)
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            v:juice_up()
+                            return true
+                        end
+                    }))
+                end
+                return {
+                    message = localize('k_mxfj_steel'),
+                    colour = G.C.UI.TEXT_INACTIVE,
                 }
             end
         end
@@ -105,6 +205,7 @@ SMODS.Joker {
     pos = { x = 6, y = 0 },
     cost = 6,
     config = { extra = 0 },
+    blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra } }
     end,
@@ -125,7 +226,7 @@ SMODS.Joker {
                         _card.ability.mxfj_patchwork = true
                     return true
                 end}))
-                card_eval_status_text(context.other_card, 'extra', nil, nil, nil, { message = localize("k_patched") })
+                card_eval_status_text(context.other_card, 'extra', nil, nil, nil, { message = localize("k_mxfj_patched") })
                 card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize { type = 'variable', key = 'a_chips', vars = { _chips } }, colour = G.C.CHIPS })
             end
         end
