@@ -455,7 +455,8 @@ SMODS.Joker {
         return {vars = {card.ability.extra}}
     end,
     calculate = function(self, card, context)
-        if not context.first_hand_drawn and context.hand_drawn and card.ability.mxfj_drew == nil then
+        if not context.first_hand_drawn and context.hand_drawn and card.ability.mxfj_hand_played and card.ability.mxfj_drew == nil then
+            card.ability.mxfj_hand_played = nil
             card.ability.mxfj_drew = true
             local hand_space = math.min(#G.deck.cards, card.ability.extra)
             if hand_space > 0 then
@@ -467,7 +468,8 @@ SMODS.Joker {
                 end}))
             end
         end
-        if context.joker_main and card.ability.mxfj_drew then
+        if context.joker_main then
+            card.ability.mxfj_hand_played = true
             card.ability.mxfj_drew = nil
         end
     end,
@@ -700,6 +702,9 @@ SMODS.Joker {
                 }
             end
         end
+    end,
+    in_pool = function()
+        return false
     end,
     atlas = "mxfj_sprites"
 }

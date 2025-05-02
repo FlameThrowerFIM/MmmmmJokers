@@ -120,7 +120,7 @@ return {
             j_mxfj_transmodifly = {
                 name = "Transmodifly",
                 text = {
-                    "Mult Cards and Wild Cards",
+                    "{C:attention}Mult Cards{} and {C:attention}Wild Cards{}",
                     "share the same abilities"
                 },
             },
