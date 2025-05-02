@@ -34,6 +34,18 @@ return {
                     "playing a {C:attention}#1#{}",
                 }
             },
+            j_mxfj_zombie_clown = {
+                name = "Zombie Clown",
+                text = {
+                    "",
+                }
+            },
+            j_mxfj_dweller = {
+                name = "Dweller Joker",
+                text = {
+                    "",
+                }
+            },
             j_mxfj_patchwork = {
                 name = "Patchwork Joker",
                 text = {
@@ -42,15 +54,115 @@ return {
                 "as {C:chips}Chips{} if not {C:attention}patched{}",
                 "{C:inactive}(Currently {C:chips}+#1# {C:inactive}Chips)"
                 }
-            }
+            },
+            j_mxfj_cryptozoologist = {
+                name = "Cryptozoologist",
+                text = {
+                    "{C:red}Rare{} Jokers each",
+                    "give {X:mult,C:white}X#1#{} Mult,",
+                    "{C:tarot}Legendary{} Jokers each",
+                    "give {X:mult,C:white}X#2#{} Mult",
+                    "{C:inactive}(Cryptozoologists excluded)"
+                }
+            },
+            j_mxfj_cyclops = {
+                name = "Cyclops Joker",
+                text = {
+                    "If played hand is a",
+                    "{C:attention}High Card{} with an {C:attention}Ace{}",
+                    "destroys it and",
+                    "gains {C:mult}+#1#{} Mult",
+                    "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
+                }
+            },
+            j_mxfj_skibidi = {
+                name = "Skibidi Jonkler",
+                text = {
+                    "Gains {C:chips}+#1#{} Chips and {C:mult}+#2#{} Mult",
+                    "per {C:attention}consecutive{} played hand",
+                    "containing a {C:attention}Flush{}",
+                    "{C:inactive}(Currently {C:chips}+#3#{C:inactive} Chips, {C:mult}+#4#{C:inactive} Mult)"
+                }
+            },
+            j_mxfj_waxwork = {
+                name = "Waxwork Jonkler",
+                text = {
+                    "Retrigger played",
+                    "and held in hand",
+                    "{C:attention}seal{} effects"
+                }
+            },
+            j_mxfj_banned_card = {
+                name = "Banned Card",
+                text = {
+                    "Draw {C:attention}#1#{} extra cards",
+                    "after the {C:attention}first hand{}"
+                }
+            },
+            j_mxfj_virtual = {
+                name = "Virtual Joker",
+                text = {
+                    "Gains {C:chips}+#1#{} Chips for every",
+                    "added {C:spades}dark suit{} card",
+                    "and {C:mult}+#2# Mult{} for every",
+                    "added {C:hearts}light suit{} card",
+                    "{C:inactive}(Currently {C:chips}+#3#{C:inactive} Chips, {C:mult}+#4#{C:inactive} Mult)"
+                }
+            },
+            j_mxfj_witch = {
+                name = "Witch",
+                text = {
+                    "{C:tarot}Tarot{} cards may",
+                    "appear in any of",
+                    "the other packs"
+                },
+            },
+            j_mxfj_transmodifly = {
+                name = "Transmodifly",
+                text = {
+                    "Mult Cards and Wild Cards",
+                    "share the same abilities"
+                },
+            },
+            j_mxfj_eldritch_totem = {
+                name = "Eldritch Totem",
+                text = {
+                    "When {C:attention}Blind{} is selected,",
+                    "create {C:attention}#1# {C:attention}Cultist{} cards",
+                    "{C:inactive}(Must have room)"
+                }
+            },
+            j_mxfj_cultist = {
+                name = "Cultist",
+                text = {
+                    "{X:mult,C:white}X#1#{} Mult for each",
+                    "different {C:attention}Cultist{},",
+                    "starts at {X:mult,C:white}X1{} Mult",
+                    "{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)"
+                }
+            },
+            j_mxfj_joker_by_default = {
+                name = "Joker By Default",
+                text = {
+                    "Gives {C:chips}+#1#{} Chips for",
+                    "each {C:attention}Blue Seal",
+                    "in your {C:attention}full deck",
+                    "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
+                }
+            },
         },
     },
     misc = {
         dictionary = {
+            k_mxfj_chips = "Chips",
             k_mxfj_halved = "Halved",
             k_mxfj_steel = "Steel",
             k_mxfj_stone = "Stone",
             k_mxfj_patched = "Patched"
+        },
+        v_dictionary = {
+            a_mxfj_plus_joker = "+#1# Joker",
+            a_mxfj_plus_jokers = "+#1# Jokers"
         }
     }
 }
