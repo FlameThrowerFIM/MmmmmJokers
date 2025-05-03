@@ -68,7 +68,7 @@ return {
             j_mxfj_cyclops = {
                 name = "Cyclops Joker",
                 text = {
-                    "If played hand is a",
+                    "If played hand is an",
                     "{C:attention}High Card{} with an {C:attention}Ace{},",
                     "destroys it and",
                     "gains {C:mult}+#1#{} Mult",
@@ -87,9 +87,8 @@ return {
             j_mxfj_waxwork = {
                 name = "Waxwork Jonkler",
                 text = {
-                    "Retrigger played",
-                    "and held in hand",
-                    "{C:attention}seal{} effects"
+                    "Retrigger played and",
+                    "held in hand {C:attention}seal{} effects"
                 }
             },
             j_mxfj_banned_card = {
@@ -103,8 +102,8 @@ return {
                 name = "Virtual Joker",
                 text = {
                     "Gains {C:chips}+#1#{} Chips for every",
-                    "added {C:spades}dark suit{} card",
-                    "and {C:mult}+#2# Mult{} for every",
+                    "added {C:spades}dark suit{} card,",
+                    "gains {C:mult}+#2# Mult{} for every",
                     "added {C:hearts}light suit{} card",
                     "{C:inactive}(Currently {C:chips}+#3#{C:inactive} Chips, {C:mult}+#4#{C:inactive} Mult)"
                 }
@@ -114,7 +113,7 @@ return {
                 text = {
                     "{C:tarot}Tarot{} cards may",
                     "appear in any of",
-                    "the other packs"
+                    "the other {C:attention}packs{}"
                 },
             },
             j_mxfj_transmodifly = {
@@ -145,9 +144,8 @@ return {
             j_mxfj_joker_by_default = {
                 name = "Joker By Default",
                 text = {
-                    "Gives {C:chips}+#1#{} Chips for",
-                    "each {C:attention}Blue Seal",
-                    "in your {C:attention}full deck",
+                    "Gives {C:chips}+#1#{} Chips for each",
+                    "{C:attention}Blue Seal{} in your {C:attention}full deck",
                     "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
                 }
             },
