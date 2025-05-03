@@ -781,7 +781,7 @@ SMODS.Joker {
 
 SMODS.DrawStep{
     key = 'mxfj_head',
-    order = -1,
+    order = 29,
     func = function(self)
         if self.ability and self.ability.mxfj_head_sprite then
             if not mxfj_mod.mxfj_head_king then mxfj_mod.mxfj_head_king = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 1,y = 2}) end
@@ -795,6 +795,9 @@ SMODS.DrawStep{
             mxfj_mod.mxfj_head = face_value[self.ability.mxfj_head_sprite] or face_value[13]
             mxfj_mod.mxfj_head.role.draw_major = self
             mxfj_mod.mxfj_head:draw_shader('dissolve', nil, nil, nil, self.children.center)
+            if self.edition then
+                mxfj_mod.mxfj_head:draw_shader(G.P_CENTERS[self.edition.key].shader, nil, self.ARGS.send_to_shader, nil, self.children.center)
+            end
         end
     end,
     conditions = {vortex = false, facing = 'front'}
