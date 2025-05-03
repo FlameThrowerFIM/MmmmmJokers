@@ -96,7 +96,7 @@ return {
                 name = "Banned Card",
                 text = {
                     "Draw {C:attention}#1#{} extra cards",
-                    "after the {C:attention}first hand{}"
+                    "after each played hand"
                 }
             },
             j_mxfj_virtual = {
