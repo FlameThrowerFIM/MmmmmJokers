@@ -1,12 +1,12 @@
 mxfj_mod = SMODS.current_mod
 mxfj_config = mxfj_mod.config
 
---SMODS.Atlas{
---    key = "modicon",
---    path = "mxfj_modicon.png",
---    px = 34,
---    py = 34,
---}
+SMODS.Atlas{
+    key = "modicon",
+    path = "mxfj_modicon.png",
+    px = 34,
+    py = 34,
+}
 
 --mxfj_mod.optional_features = {
 --    retrigger_joker = true,
@@ -689,20 +689,32 @@ SMODS.Joker {
     rarity = 1,
     pos = { x = 8, y = 1 },
     cost = 4,
-    config = {extra = 1},
+    config = {extra = 0.5},
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-        local Xmlt = math.max(1, 1 + (card.ability.extra * (get_cultist_count() - 1)))
+        local Xmlt = math.max(1, 1 + card.ability.extra * (get_cultist_count() - 1))
         return {vars = {card.ability.extra, Xmlt}}
     end,
     calculate = function(self, card, context)
         if context.joker_main then
-            local Xmlt = math.max(1, 1 + (card.ability.extra * (get_cultist_count() - 1)))
+            local Xmlt = math.max(1, 1 + card.ability.extra * (get_cultist_count() - 1))
             if Xmlt ~= 1 then
                 return {
                     Xmult = Xmlt
                 }
             end
+        end
+    end,
+    update = function(self, card, dt)
+        if card.area and card.area == G.jokers and not next(SMODS.find_card('j_mxfj_eldritch_totem', true)) and not card.mxfj_being_dissolved then
+          G.E_MANAGER:add_event(Event({
+            func = function()
+                if card and not card.mxfj_being_dissolved then
+                    card.mxfj_being_dissolved = true
+                    card:start_dissolve({G.C.RED}, nil, 1.6)
+                end
+                return true
+            end}))
         end
     end,
     in_pool = function()
@@ -836,7 +848,7 @@ SMODS.Joker {
     config = {extra = {mult = 0, mult_mod = 1}},
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-        return {vars = {card.ability.extra.mult_mod, card.ability.extra}}
+        return {vars = {card.ability.extra.mult_mod, card.ability.extra.mult}}
     end,
     calculate = function(self, card, context)
         if context.cardarea == G.jokers and context.before and no_bp_retrigger(context) then

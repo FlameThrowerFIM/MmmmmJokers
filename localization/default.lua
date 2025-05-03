@@ -135,9 +135,10 @@ return {
             j_mxfj_cultist = {
                 name = "Cultist",
                 text = {
-                    "{X:mult,C:white}X#1#{} Mult for each",
-                    "different {C:attention}Cultist{},",
-                    "starts at {X:mult,C:white}X1{} Mult",
+                    "{X:mult,C:white}X#1#{} Mult for every",
+                    "other {C:attention}Cultist{},",
+                    "{S:1.1,C:red,E:2}self destructs{} if no",
+                    "{C:attention}Eldritch Totem{} is present",
                     "{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)"
                 }
             },
