@@ -457,6 +457,10 @@ SMODS.Joker {
         return {vars = {card.ability.extra}}
     end,
     calculate = function(self, card, context)
+        if context.setting_blind then
+            card.ability.mxfj_hand_played = nil
+            card.ability.mxfj_already_drew = nil
+        end
         if not context.first_hand_drawn and context.hand_drawn and card.ability.mxfj_hand_played and no_bp_retrigger(context) then
             if (not card.ability.mxfj_already_drew or card.ability.mxfj_already_drew == nil) then
                 card.ability.mxfj_already_drew = true
