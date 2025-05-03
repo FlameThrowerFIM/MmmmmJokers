@@ -424,7 +424,7 @@ SMODS.Joker {
     end,
     in_pool = function()
         for _, v in pairs(G.playing_cards) do
-            if v.seal then return true end
+            if v.seal and not v.seal == "Purple" then return true end
         end
         return false
     end,
@@ -722,9 +722,11 @@ SMODS.Joker {
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = {key = 'blue_seal', set = 'Other'}
         local chps = 0
-        for _, v in ipairs(G.playing_cards) do
-            if v.seal and v.seal == 'Blue' then
-                chps = chps + card.ability.extra
+        if G.playing_cards then
+            for _, v in ipairs(G.playing_cards) do
+                if v.seal and v.seal == 'Blue' then
+                    chps = chps + card.ability.extra
+                end
             end
         end
         return {vars = {card.ability.extra, chps}}
@@ -829,28 +831,24 @@ SMODS.Joker {
     rarity = 1,
     pos = { x = 4, y = 2 },
     cost = 4,
-    config = {extra = 15},
+    config = {extra = {mult = 0, mult_mod = 1}},
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-        return {vars = {card.ability.extra, (G.GAME and G.GAME.current_round.hands_played and G.GAME.current_round.hands_played * card.ability.extra) or 0}}
+        return {vars = {card.ability.extra.mult_mod, card.ability.extra}}
     end,
     calculate = function(self, card, context)
-        if context.joker_main then
-            local mlt = G.GAME.current_round.hands_played * card.ability.extra
-            if mlt ~= 0 then
-                G.E_MANAGER:add_event(Event({
-                    func = (function()
-                        card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_mult', vars = {mlt}}, colour = G.C.MULT})
-                    return true
-                end)}))
-                return {
-                    mult = mlt
-                }
-            end
+        if context.cardarea == G.jokers and context.before and no_bp_retrigger(context) then
+            card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
+        end
+        if context.joker_main and card.ability.extra.mult ~= 0 then
+            return {
+                mult = card.ability.extra.mult
+            }
         end
         if context.end_of_round and not (context.individual or context.repetition) and no_bp_retrigger(context) then
             G.E_MANAGER:add_event(Event({
                 func = function()
+                    card.ability.extra.mult = 0
                     card_eval_status_text(card, 'extra', nil, nil, nil, {
                         message = localize('k_reset'),
                         colour = G.C.RED
@@ -881,6 +879,48 @@ SMODS.Joker {
                 return {
                     Xmult = card.ability.extra
                 }
+            end
+        end
+    end,
+    atlas = "mxfj_sprites"
+}
+
+-- Pod Joker --
+
+SMODS.Joker {
+    key = "pod",
+    name = "Pod Joker",
+    rarity = 1,
+    pos = { x = 6, y = 2 },
+    cost = 4,
+    calculate = function(self, card, context)
+        if context.mxfj_playing_hand and not card.getting_sliced and no_bp_retrigger(context) then
+            local valid_jokers = {}
+            if G.jokers and G.jokers.cards and #G.jokers.cards > 1 then
+                for i = 1, #G.jokers.cards do
+                    if not G.jokers.cards[i].debuff and G.jokers.cards[i] ~= card and G.jokers.cards[i].config.center.key ~= "j_mxfj_pod" then
+                        valid_jokers[#valid_jokers+1] = G.jokers.cards[i]
+                    end
+                end
+            end
+            if #valid_jokers > 0 then
+                local chosen_joker = pseudorandom_element(valid_jokers, pseudoseed('pod'))
+                card.mxfj_is_pod = true
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        card:juice_up(0.3, 0.4)
+                        card:set_ability(G.P_CENTERS[chosen_joker.config.center.key], true)
+                        card:set_cost()
+                        for k, v in pairs(chosen_joker.ability) do
+                            if type(v) == 'table' then
+                                card.ability[k] = copy_table(v)
+                            else
+                                card.ability[k] = v
+                            end
+                        end
+                        return true
+                    end
+                }))
             end
         end
     end,

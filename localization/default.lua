@@ -175,6 +175,15 @@ return {
                     "when scored"
                 }
             },
+            j_mxfj_pod = {
+                name = "Pod Joker",
+                text = {
+                    "Turns into a random",
+                    "owned {C:attention}Joker{} during",
+                    "each played hand",
+                    "{C:inactive}(Except Pod Joker)"
+                }
+            },
         },
     },
     misc = {
