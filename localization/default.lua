@@ -154,10 +154,10 @@ return {
             j_mxfj_headless_horseman = {
                 name = "Headless Horseman",
                 text = {
-                    "Last played {C:attention}face",
-                    "card gives {X:mult,C:white}X#1#{} Mult",
-                    "when scored and",
-                    "is destroyed"
+                    "Destroys the last scored",
+                    "{C:attention}face{} card and gains {X:mult,C:white}X#1#{} Mult",
+                    "{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)"
+
                 }
             },
             j_mxfj_prepper = {

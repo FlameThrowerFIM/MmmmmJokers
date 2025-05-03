@@ -806,40 +806,37 @@ SMODS.Joker {
     rarity = 2,
     pos = { x = 0, y = 2 },
     cost = 6,
-    config = {extra = 2},
+    config = {extra = {xmult = 1, xmult_mod = 0.25}},
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
-        return {vars = {card.ability.extra}}
+        return {vars = {card.ability.extra.xmult_mod, card.ability.extra.xmult}}
     end,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and context.scoring_hand and not context.end_of_round then
-            local faces = {}
-            for i = 1, #context.scoring_hand do
-                if context.scoring_hand[i]:is_face() then faces[#faces+1] = context.scoring_hand[i] end
-            end
-            if context.other_card == faces[#faces] then
-                if context.other_card.debuff then
-                    return {
-                        message = localize('k_debuffed'),
-                        colour = G.C.RED,
-                    }
-                end
-                return {
-                    Xmult = card.ability.extra
-                }
-            end
-        end
         if context.destroy_card and context.destroy_card ~= card and context.scoring_hand and context.full_hand and no_bp_retrigger(context) then
             local faces = {}
             for i = 1, #context.full_hand do
                 if context.full_hand[i]:is_face() and SMODS.in_scoring(context.full_hand[i], context.scoring_hand) then
                     faces[#faces+1] = context.full_hand[i]
-                    card.ability.mxfj_head_sprite = context.full_hand[i]:get_id()
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            card.ability.mxfj_head_sprite = context.full_hand[i]:get_id()
+                        return true
+                    end}))
                 end
             end
             if faces[1] and context.destroy_card == faces[#faces] then
+                card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_mod
+                card_eval_status_text(card, 'extra', nil, nil, nil, {
+                    message = localize{type='variable',key='a_xmult',vars={card.ability.extra.xmult}},
+                    colour = G.C.FILTER
+                })
                 return true
             end
+        end
+        if context.joker_main and card.ability.extra.xmult ~= 1 then
+            return {
+                xmult = card.ability.extra.xmult
+            }
         end
     end,
     atlas = "mxfj_sprites"
