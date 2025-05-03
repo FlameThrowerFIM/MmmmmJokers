@@ -69,7 +69,7 @@ return {
                 name = "Cyclops Joker",
                 text = {
                     "If played hand is a",
-                    "{C:attention}High Card{} with an {C:attention}Ace{}",
+                    "{C:attention}High Card{} with an {C:attention}Ace{},",
                     "destroys it and",
                     "gains {C:mult}+#1#{} Mult",
                     "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
