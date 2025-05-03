@@ -150,6 +150,31 @@ return {
                     "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips)",
                 }
             },
+            j_mxfj_headless_horseman = {
+                name = "Headless Horseman",
+                text = {
+                    "Last played {C:attention}face",
+                    "card gives {X:mult,C:white}X#1#{} Mult",
+                    "when scored and",
+                    "is destroyed"
+                }
+            },
+            j_mxfj_prepper = {
+                name = "Prepper",
+                text = {
+                    "{C:mult}+#1#{} Mult per hand",
+                    "played this round",
+                    "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
+                }
+            },
+            j_mxfj_odontophobia = {
+                name = "Odontophobia",
+                text = {
+                    "Played {C:attention}face{} cards",
+                    "give {X:mult,C:white}X#1#{} Mult",
+                    "when scored"
+                }
+            },
         },
     },
     misc = {

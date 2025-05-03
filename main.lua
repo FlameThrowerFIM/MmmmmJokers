@@ -752,3 +752,137 @@ SMODS.Joker {
     end,
     atlas = "mxfj_sprites"
 }
+
+-- Headless Horseman --
+
+SMODS.DrawStep{
+    key = 'mxfj_head',
+    order = -1,
+    func = function(self)
+        if self.ability and self.ability.mxfj_head_sprite then
+            if not mxfj_mod.mxfj_head_king then mxfj_mod.mxfj_head_king = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 1,y = 2}) end
+            if not mxfj_mod.mxfj_head_queen then mxfj_mod.mxfj_head_queen = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 2,y = 2}) end
+            if not mxfj_mod.mxfj_head_jack then mxfj_mod.mxfj_head_jack = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 3,y = 2}) end
+            local face_value = {
+                [11] = mxfj_mod.mxfj_head_jack,
+                [12] = mxfj_mod.mxfj_head_queen,
+                [13] = mxfj_mod.mxfj_head_king,
+            }
+            mxfj_mod.mxfj_head = face_value[self.ability.mxfj_head_sprite] or face_value[13]
+            mxfj_mod.mxfj_head.role.draw_major = self
+            mxfj_mod.mxfj_head:draw_shader('dissolve', nil, nil, nil, self.children.center)
+        end
+    end,
+    conditions = {vortex = false, facing = 'front'}
+}
+
+SMODS.Joker {
+    key = "headless_horseman",
+    name = "Headless Horseman",
+    rarity = 2,
+    pos = { x = 0, y = 2 },
+    cost = 6,
+    config = {extra = 2},
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return {vars = {card.ability.extra}}
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and context.scoring_hand and not context.end_of_round then
+            local faces = {}
+            for i = 1, #context.scoring_hand do
+                if context.scoring_hand[i]:is_face() then faces[#faces+1] = context.scoring_hand[i] end
+            end
+            if context.other_card == faces[#faces] then
+                if context.other_card.debuff then
+                    return {
+                        message = localize('k_debuffed'),
+                        colour = G.C.RED,
+                    }
+                end
+                return {
+                    Xmult = card.ability.extra
+                }
+            end
+        end
+        if context.destroy_card and context.destroy_card ~= card and context.scoring_hand and context.full_hand and no_bp_retrigger(context) then
+            local faces = {}
+            for i = 1, #context.full_hand do
+                if context.full_hand[i]:is_face() and SMODS.in_scoring(context.full_hand[i], context.scoring_hand) then
+                    faces[#faces+1] = context.full_hand[i]
+                    card.ability.mxfj_head_sprite = context.full_hand[i]:get_id()
+                end
+            end
+            if faces[1] and context.destroy_card == faces[#faces] then
+                return true
+            end
+        end
+    end,
+    atlas = "mxfj_sprites"
+}
+
+-- Prepper --
+
+SMODS.Joker {
+    key = "prepper",
+    name = "Prepper",
+    rarity = 1,
+    pos = { x = 4, y = 2 },
+    cost = 4,
+    config = {extra = 15},
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return {vars = {card.ability.extra, (G.GAME and G.GAME.current_round.hands_played and G.GAME.current_round.hands_played * card.ability.extra) or 0}}
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local mlt = G.GAME.current_round.hands_played * card.ability.extra
+            if mlt ~= 0 then
+                G.E_MANAGER:add_event(Event({
+                    func = (function()
+                        card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize{type = 'variable', key = 'a_mult', vars = {mlt}}, colour = G.C.MULT})
+                    return true
+                end)}))
+                return {
+                    mult = mlt
+                }
+            end
+        end
+        if context.end_of_round and not (context.individual or context.repetition) and no_bp_retrigger(context) then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    card_eval_status_text(card, 'extra', nil, nil, nil, {
+                        message = localize('k_reset'),
+                        colour = G.C.RED
+                    })
+                return true
+            end}))
+        end
+    end,
+    atlas = "mxfj_sprites"
+}
+
+-- Odontophobia --
+
+SMODS.Joker {
+    key = "odontophobia",
+    name = "Odontophobia",
+    rarity = 2,
+    pos = { x = 5, y = 2 },
+    cost = 6,
+    config = {extra = 1.32},
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return {vars = {card.ability.extra}}
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and not context.end_of_round then
+            if context.other_card:is_face() then
+                return {
+                    Xmult = card.ability.extra
+                }
+            end
+        end
+    end,
+    atlas = "mxfj_sprites"
+}
