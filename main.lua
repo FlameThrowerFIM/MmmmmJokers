@@ -329,18 +329,20 @@ SMODS.Joker {
         return {vars = {card.ability.extra.mult_mod, card.ability.extra.mult}}
     end,
     calculate = function(self, card, context)
-        if context.destroy_card and context.destroy_card ~= card and context.scoring_hand then
-            local aces = {}
-            for i = 1 , #context.scoring_hand do
-                if context.scoring_hand[i]:get_id() == 14 then aces[#aces+1] = context.scoring_hand[i] end
-            end
-            if aces[1] and #aces == 1 then
-                if context.destroy_card == aces[1] then
-                    card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
-                    card_eval_status_text(card, 'extra', nil, nil, nil, {
-                        message = localize('k_upgrade_ex'),
-                    })
-                    return true
+        if context.destroy_card and context.destroy_card ~= card and context.scoring_hand and context.scoring_name then
+            if context.scoring_name == "High Card" then
+                local aces = {}
+                for i = 1 , #context.scoring_hand do
+                    if context.scoring_hand[i]:get_id() == 14 then aces[#aces+1] = context.scoring_hand[i] end
+                end
+                if aces[1] and #aces == 1 then
+                    if context.destroy_card == aces[1] then
+                        card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
+                        card_eval_status_text(card, 'extra', nil, nil, nil, {
+                            message = localize('k_upgrade_ex'),
+                        })
+                        return true
+                    end
                 end
             end
         end
