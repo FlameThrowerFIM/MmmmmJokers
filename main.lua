@@ -457,22 +457,26 @@ SMODS.Joker {
         return {vars = {card.ability.extra}}
     end,
     calculate = function(self, card, context)
-        if not context.first_hand_drawn and context.hand_drawn and card.ability.mxfj_hand_played and card.ability.mxfj_drew == nil then
-            card.ability.mxfj_hand_played = nil
-            card.ability.mxfj_drew = true
-            local hand_space = math.min(#G.deck.cards, card.ability.extra)
-            if hand_space > 0 then
-                G.E_MANAGER:add_event(Event({
-                    func = function()
-                        card:juice_up(0.3, 0.5)
-                        G.FUNCS.draw_from_deck_to_hand(hand_space)
-                    return true
-                end}))
+        if not context.first_hand_drawn and context.hand_drawn and card.ability.mxfj_hand_played and no_bp_retrigger(context) then
+            if (not card.ability.mxfj_already_drew or card.ability.mxfj_already_drew == nil) then
+                card.ability.mxfj_already_drew = true
+                local hand_space = math.min(#G.deck.cards, card.ability.extra)
+                if hand_space > 0 then
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            card:juice_up(0.3, 0.5)
+                            G.FUNCS.draw_from_deck_to_hand(hand_space)
+                            card.ability.mxfj_hand_played = nil
+                        return true
+                    end}))
+                end
+            else
+                card.ability.mxfj_already_drew = nil
             end
         end
-        if context.joker_main then
+        if context.joker_main and no_bp_retrigger(context) then
             card.ability.mxfj_hand_played = true
-            card.ability.mxfj_drew = nil
+            card.ability.mxfj_already_drew = nil
         end
     end,
     atlas = "mxfj_sprites"
@@ -845,7 +849,7 @@ SMODS.Joker {
     rarity = 1,
     pos = { x = 4, y = 2 },
     cost = 4,
-    config = {extra = {mult = 0, mult_mod = 1}},
+    config = {extra = {mult = 0, mult_mod = 15}},
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.mult_mod, card.ability.extra.mult}}
