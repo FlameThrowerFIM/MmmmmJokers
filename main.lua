@@ -913,9 +913,9 @@ SMODS.Joker {
 SMODS.Joker {
     key = "pod",
     name = "Pod Joker",
-    rarity = 1,
+    rarity = 2,
     pos = { x = 7, y = 2 },
-    cost = 4,
+    cost = 6,
     calculate = function(self, card, context)
         if context.mxfj_playing_hand and not card.getting_sliced and no_bp_retrigger(context) then
             local valid_jokers = {}
