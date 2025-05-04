@@ -184,7 +184,7 @@ return {
                 }
             },
             j_mxfj_twins = {
-                name = "Twins",
+                name = "The Twins",
                 text = {
                     "When {C:attention}Blind{} is skipped,",
                     "create a {C:attention}Double Tag{}",
