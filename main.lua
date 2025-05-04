@@ -783,16 +783,17 @@ SMODS.DrawStep{
     key = 'mxfj_head',
     order = 29,
     func = function(self)
-        if self.ability and self.ability.mxfj_head_sprite then
+        if self.config and self.config.center.key == 'j_mxfj_headless_horseman' and self.ability and self.ability.mxfj_head_sprite then
             if not mxfj_mod.mxfj_head_king then mxfj_mod.mxfj_head_king = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 1,y = 2}) end
             if not mxfj_mod.mxfj_head_queen then mxfj_mod.mxfj_head_queen = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 2,y = 2}) end
             if not mxfj_mod.mxfj_head_jack then mxfj_mod.mxfj_head_jack = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 3,y = 2}) end
+            if not mxfj_mod.mxfj_head_other then mxfj_mod.mxfj_head_other = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 4,y = 2}) end
             local face_value = {
                 [11] = mxfj_mod.mxfj_head_jack,
                 [12] = mxfj_mod.mxfj_head_queen,
                 [13] = mxfj_mod.mxfj_head_king,
             }
-            mxfj_mod.mxfj_head = face_value[self.ability.mxfj_head_sprite] or face_value[13]
+            mxfj_mod.mxfj_head = face_value[self.ability.mxfj_head_sprite] or mxfj_mod.mxfj_head_other
             mxfj_mod.mxfj_head.role.draw_major = self
             mxfj_mod.mxfj_head:draw_shader('dissolve', nil, nil, nil, self.children.center)
             if self.edition then
@@ -851,7 +852,7 @@ SMODS.Joker {
     key = "prepper",
     name = "Prepper",
     rarity = 1,
-    pos = { x = 4, y = 2 },
+    pos = { x = 5, y = 2 },
     cost = 4,
     config = {extra = {mult = 0, mult_mod = 15}},
     blueprint_compat = true,
@@ -888,7 +889,7 @@ SMODS.Joker {
     key = "odontophobia",
     name = "Odontophobia",
     rarity = 2,
-    pos = { x = 5, y = 2 },
+    pos = { x = 6, y = 2 },
     cost = 6,
     config = {extra = 1.32},
     blueprint_compat = true,
@@ -913,7 +914,7 @@ SMODS.Joker {
     key = "pod",
     name = "Pod Joker",
     rarity = 1,
-    pos = { x = 6, y = 2 },
+    pos = { x = 7, y = 2 },
     cost = 4,
     calculate = function(self, card, context)
         if context.mxfj_playing_hand and not card.getting_sliced and no_bp_retrigger(context) then
@@ -944,6 +945,27 @@ SMODS.Joker {
                     end
                 }))
             end
+        end
+    end,
+    atlas = "mxfj_sprites"
+}
+
+-- The Twins --
+
+SMODS.Joker {
+    key = "twins",
+    name = "The Twins",
+    rarity = 3,
+    pos = { x = 8, y = 2 },
+    cost = 8,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_TAGS.tag_double
+    end,
+    calculate = function(self, card, context)
+        if context.mfxfj_pre_skip and no_bp_retrigger(context) then
+            add_tag(Tag('tag_double'))
+            play_sound('generic1', 0.9 + math.random()*0.1, 0.8)
+            play_sound('holo1', 1.2 + math.random()*0.1, 0.4)
         end
     end,
     atlas = "mxfj_sprites"

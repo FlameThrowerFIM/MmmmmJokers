@@ -103,3 +103,14 @@ payload = '''
 if _c.set == "Joker" and card and card.config.center.key ~= "j_mxfj_pod" and card.mxfj_is_pod then info_queue[#info_queue+1] = G.P_CENTERS.j_mxfj_pod end
 '''
 match_indent = true
+
+# The Twins effect
+[[patches]]
+[patches.pattern]
+target = "functions/button_callbacks.lua"
+pattern = "G.GAME.skips = (G.GAME.skips or 0) + 1"
+position = "after"
+payload = '''
+SMODS.calculate_context({mfxfj_pre_skip = true})
+'''
+match_indent = true

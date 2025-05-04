@@ -183,6 +183,14 @@ return {
                     "{C:inactive}(Except Pod Joker)"
                 }
             },
+            j_mxfj_twins = {
+                name = "Twins",
+                text = {
+                    "When {C:attention}Blind{} is skipped,",
+                    "create a {C:attention}Double Tag{}",
+                    "before {C:attention}Tag{} reward"
+                }
+            },
         },
     },
     misc = {
