@@ -85,7 +85,7 @@ return {
                 }
             },
             j_mxfj_waxwork = {
-                name = "Waxwork Jonkler",
+                name = "Waxwork Joker",
                 text = {
                     "Retrigger played and",
                     "held in hand {C:attention}seal{} effects"
