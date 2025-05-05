@@ -854,7 +854,7 @@ SMODS.Joker {
     rarity = 1,
     pos = { x = 5, y = 2 },
     cost = 4,
-    config = {extra = {mult = 0, mult_mod = 15}},
+    config = {extra = {mult = 0, mult_mod = 10}},
     blueprint_compat = true,
     loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.mult_mod, card.ability.extra.mult}}
