@@ -72,7 +72,20 @@ SMODS.calculate_context({mxfj_playing_hand = true})
 '''
 match_indent = true
 
-# Pod reset 1
+# Context mxfj_playing_hand
+[[patches]]
+[patches.pattern]
+target = 'functions/state_events.lua'
+match_indent = true
+position = 'before'
+pattern = '''
+for i=1, hand_space do --draw cards from deckL
+'''
+payload = '''
+SMODS.calculate_context({mxfj_post_hand_space = true, first_hand_drawn = not G.GAME.current_round.any_hand_drawn and G.GAME.facing_blind})
+'''
+
+# Pod reset
 [[patches]]
 [patches.pattern]
 target = "card.lua"
