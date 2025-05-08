@@ -179,14 +179,36 @@ SMODS.Joker {
 
 -- Zombie Clown --
 
--- SMODS.Joker {
---     key = "zombie_clown",
---     name = "Zombie Clown",
---     rarity = 1,
---     pos = { x = 4, y = 0 },
---     cost = 4,
---     atlas = "mxfj_sprites"
--- }
+SMODS.Joker {
+    key = "zombie_clown",
+    name = "Zombie Clown",
+    rarity = 2,
+    pos = { x = 4, y = 0 },
+    cost = 6,
+    config = {extra = 4},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_CENTERS.c_death
+        return {vars = {(G.GAME and G.GAME.probabilities.normal .. '') or 1, card.ability.extra}}
+    end,
+    calculate = function(self, card, context)
+        if context.reroll_shop and no_bp_retrigger(context) then
+            if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit and pseudorandom('zombclown'..G.GAME.round_resets.ante) < G.GAME.probabilities.normal/card.ability.extra then
+                G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'before',
+                    delay = 0.0,
+                    func = (function()
+                            SMODS.add_card({key = 'c_death', key_append = 'zmbclw'})
+                            G.GAME.consumeable_buffer = 0
+                        return true
+                    end)
+                }))
+                card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('k_mxfj_brains'), colour = HEX("feb1fb")})
+            end
+        end
+    end,
+    atlas = "mxfj_sprites"
+}
 
 -- Dweller Joker --
 
@@ -254,6 +276,7 @@ SMODS.Joker {
     cost = 6,
     config = { extra = 0 },
     blueprint_compat = true,
+    perishable_compat = false,
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra } }
     end,
@@ -627,7 +650,7 @@ SMODS.Joker {
     pos = { x = 6, y = 1 },
     cost = 6,
     calculate = function(self, card, context)
-        if not context.end_of_round and context.individual and context.cardarea == G.play then
+        if not context.end_of_round and context.individual and context.cardarea == G.play and no_bp_retrigger(context) then
             if context.other_card.ability.effect == "Wild Card" then
                 return {
                     mult = G.P_CENTERS.m_mult.config.mult,
@@ -812,6 +835,7 @@ SMODS.Joker {
     cost = 6,
     config = {extra = {xmult = 1, xmult_mod = 0.25}},
     blueprint_compat = true,
+    perishable_compat = true,
     loc_vars = function(self, info_queue, card)
         return {vars = {card.ability.extra.xmult_mod, card.ability.extra.xmult}}
     end,

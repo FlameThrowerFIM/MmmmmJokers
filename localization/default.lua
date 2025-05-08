@@ -37,7 +37,9 @@ return {
             j_mxfj_zombie_clown = {
                 name = "Zombie Clown",
                 text = {
-                    "",
+                    "{C:green}#1# in #2#{} chance to",
+                    "create a {C:tarot}Death{}",
+                    "card on {C:green}reroll{}"
                 }
             },
             j_mxfj_dweller = {
@@ -195,6 +197,7 @@ return {
     },
     misc = {
         dictionary = {
+            k_mxfj_brains = "Brains",
             k_mxfj_chips = "Chips",
             k_mxfj_halved = "Halved",
             k_mxfj_steel = "Steel",
