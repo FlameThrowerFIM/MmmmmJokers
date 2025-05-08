@@ -82,7 +82,7 @@ pattern = '''
 for i=1, hand_space do --draw cards from deckL
 '''
 payload = '''
-SMODS.calculate_context({mxfj_post_hand_space = true, first_hand_drawn = not G.GAME.current_round.any_hand_drawn and G.GAME.facing_blind})
+SMODS.calculate_context({mxfj_post_hand_space = true})
 '''
 
 # Pod reset

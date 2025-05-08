@@ -461,7 +461,7 @@ SMODS.Joker {
             card.ability.mxfj_hand_played = nil
             card.ability.mxfj_already_drew = nil
         end
-        if context.mxfj_post_hand_space and not context.first_hand_drawn and card.ability.mxfj_hand_played and no_bp_retrigger(context) then
+        if context.mxfj_post_hand_space and card.ability.mxfj_hand_played and no_bp_retrigger(context) then
             if (not card.ability.mxfj_already_drew or card.ability.mxfj_already_drew == nil) then
                 card.ability.mxfj_already_drew = true
                 local hand_space = math.min(#G.deck.cards, card.ability.extra)
