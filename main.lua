@@ -994,3 +994,28 @@ SMODS.Joker {
     end,
     atlas = "mxfj_sprites"
 }
+
+-- Man-phibian --
+
+SMODS.Joker {
+    key = "manphibian",
+    name = "Man-phibian",
+    rarity = 1,
+    pos = { x = 9, y = 2 },
+    cost = 4,
+    config = {extra = 8},
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return {vars = {card.ability.extra}}
+    end,
+    calculate = function(self, card, context)
+        if context.individual and not context.end_of_round then
+            if context.other_card and context.other_card.ability.effect ~= "Base" then
+                return {
+                    mult = card.ability.extra
+                }
+            end
+        end
+    end,
+    atlas = "mxfj_sprites"
+}

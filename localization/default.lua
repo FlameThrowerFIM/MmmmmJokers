@@ -193,6 +193,14 @@ return {
                     "before {C:attention}Tag{} reward"
                 }
             },
+            j_mxfj_manphibian = {
+                name = "Man-phibian",
+                text = {
+                    "Each {C:attention}enhanced card{}",
+                    "held in hand",
+                    "gives {C:mult}+#1#{} Mult",
+                },
+            },
         },
     },
     misc = {
