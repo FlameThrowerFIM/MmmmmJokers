@@ -1009,7 +1009,7 @@ SMODS.Joker {
         return {vars = {card.ability.extra}}
     end,
     calculate = function(self, card, context)
-        if context.individual and not context.end_of_round then
+        if context.individual and context.cardarea == G.hand and not context.end_of_round then
             if context.other_card and context.other_card.ability.effect ~= "Base" then
                 return {
                     mult = card.ability.extra
