@@ -92,3 +92,24 @@ payload = '''
 SMODS.calculate_context({mfxfj_pre_skip = true})
 '''
 match_indent = true
+
+# Where's Jimbo effect
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "local _size = self.ability.extra"
+position = "after"
+payload = '''
+if self.ability.name:find('Buffoon') and next(SMODS.find_card('j_mxfj_wheres_jimbo')) then
+    local mxfj_extra_choice = 0
+    for k, v in ipairs(SMODS.find_card('j_mxfj_wheres_jimbo')) do
+        if v.ability and v.ability.extra then
+            mxfj_extra_choice = mxfj_extra_choice + v.ability.extra
+        end
+    end
+    if mxfj_extra_choice > 0 then
+        _size = _size + mxfj_extra_choice
+    end
+end
+'''
+match_indent = true

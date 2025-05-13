@@ -458,14 +458,20 @@ SMODS.Joker {
 
 -- Where's Jimbo --
 
--- SMODS.Joker {
---     key = "wheres_jimbo",
---     name = "Where's Jimbo",
---     rarity = 1,
---     pos = { x = 1, y = 1 },
---     cost = 4,
---     atlas = "mxfj_sprites"
--- }
+SMODS.Joker {
+    key = "wheres_jimbo",
+    name = "Where's Jimbo",
+    rarity = 1,
+    pos = { x = 1, y = 1 },
+    cost = 4,
+    config = {extra = 2},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = {key = "undefined_buffoon_pack", set = "Other"}
+        return {vars = {card.ability.extra}}
+    end,
+    -- Where's Jimbo effect in "lovely.toml"
+    atlas = "mxfj_sprites"
+}
 
 -- Banned Card --
 

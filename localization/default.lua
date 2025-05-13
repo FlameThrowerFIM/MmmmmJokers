@@ -93,6 +93,13 @@ return {
                     "held in hand {C:attention}seal{} effects"
                 }
             },
+            j_mxfj_wheres_jimbo = {
+                name = "Where's Jimbo",
+                text = {
+                    "{C:attention}+#1#{} options in",
+                    "{C:attention}Buffoon Packs{}"
+                }
+            },
             j_mxfj_banned_card = {
                 name = "Banned Card",
                 text = {
@@ -200,6 +207,15 @@ return {
                     "held in hand",
                     "gives {C:mult}+#1#{} Mult",
                 },
+            },
+        },
+        Other = {
+            undefined_buffoon_pack = {
+                name = "Buffoon Pack",
+                text = {
+                    "Choose {C:attention}X{} of up to",
+                    "{C:attention}Y{C:joker} Joker{} cards"
+                }
             },
         },
     },
