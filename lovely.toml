@@ -58,7 +58,21 @@ end
 '''
 match_indent = true
 
-# Context mxfj_post_hand_space
+# Context mxfj_playing_hand
+[[patches]]
+[patches.regex]
+target = "functions/state_events.lua"
+pattern = '''
+G\.E_MANAGER:add_event\(Event\(\{\s*trigger\s*=\s*'immediate',\s*func\s*=\s*function\(\)\s*G\.STATE\s*=\s*G\.STATES\.HAND_PLAYED
+'''
+position = "before"
+payload = '''
+SMODS.calculate_context({mxfj_playing_hand = true})
+
+'''
+match_indent = true
+
+# Context mxfj_playing_hand
 [[patches]]
 [patches.pattern]
 target = 'functions/state_events.lua'
@@ -70,6 +84,27 @@ for i=1, hand_space do --draw cards from deckL
 payload = '''
 SMODS.calculate_context({mxfj_post_hand_space = true})
 '''
+
+# Pod reset
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = "elseif context.after then"
+position = "after"
+payload = '''
+    if self.mxfj_is_pod then
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                self:juice_up(0.3, 0.5)
+                self:set_ability(G.P_CENTERS["j_mxfj_pod"], true)
+                self:set_cost()
+                self.mxfj_is_pod = nil
+                return true
+            end
+        }))
+    end
+'''
+match_indent = true
 
 # Pod tooltip when transformed
 [[patches]]
