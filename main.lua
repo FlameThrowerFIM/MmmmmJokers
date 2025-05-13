@@ -941,7 +941,7 @@ SMODS.Joker {
     pos = { x = 7, y = 2 },
     cost = 6,
     calculate = function(self, card, context)
-        if context.mxfj_playing_hand and not card.getting_sliced and no_bp_retrigger(context) then
+        if context.first_hand_drawn and not card.getting_sliced and no_bp_retrigger(context) then
             local valid_jokers = {}
             if G.jokers and G.jokers.cards and #G.jokers.cards > 1 then
                 for i = 1, #G.jokers.cards do
@@ -952,7 +952,7 @@ SMODS.Joker {
             end
             if #valid_jokers > 0 then
                 local chosen_joker = pseudorandom_element(valid_jokers, pseudoseed('pod'))
-                card.mxfj_is_pod = true
+                card.ability.mxfj_is_pod = true
                 G.E_MANAGER:add_event(Event({
                     func = function()
                         card:juice_up(0.3, 0.4)
@@ -973,6 +973,52 @@ SMODS.Joker {
     end,
     atlas = "mxfj_sprites"
 }
+
+local cj = Card.calculate_joker
+function Card:calculate_joker(context)
+    if self.ability and self.ability.mxfj_is_pod and not self.getting_sliced and no_bp_retrigger(context) then
+        if context.cardarea == G.jokers and context.after then
+            local valid_jokers = {}
+            if G.jokers and G.jokers.cards and #G.jokers.cards > 1 then
+                for i = 1, #G.jokers.cards do
+                    if not G.jokers.cards[i].debuff and G.jokers.cards[i] ~= self and G.jokers.cards[i].config.center.key ~= "j_mxfj_pod" then
+                        valid_jokers[#valid_jokers+1] = G.jokers.cards[i]
+                    end
+                end
+            end
+            if #valid_jokers > 0 then
+                local chosen_joker = pseudorandom_element(valid_jokers, pseudoseed('pod'))
+                self.ability.mxfj_is_pod = true
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        self:juice_up(0.3, 0.4)
+                        self:set_ability(G.P_CENTERS[chosen_joker.config.center.key], true)
+                        self:set_cost()
+                        for k, v in pairs(chosen_joker.ability) do
+                            if type(v) == 'table' then
+                                self.ability[k] = copy_table(v)
+                            else
+                                self.ability[k] = v
+                            end
+                        end
+                        return true
+                    end
+                }))
+            end
+        elseif context.starting_shop then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    self:juice_up(0.3, 0.5)
+                    self:set_ability(G.P_CENTERS["j_mxfj_pod"], true)
+                    self:set_cost()
+                    self.ability.mxfj_is_pod = nil
+                    return true
+                end
+            }))
+        end
+    end
+    return cj(self, context)
+end
 
 -- The Twins --
 
