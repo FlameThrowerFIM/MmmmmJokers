@@ -586,7 +586,9 @@ SMODS.Joker {
             if card.ability.extra.chips ~= 0 and card.ability.extra.mult ~= 0 then
                 return {
                     chips = card.ability.extra.chips,
-                    mult = card.ability.extra.mult
+                    extra = {
+                        mult = card.ability.extra.mult
+                    }
                 }
             elseif card.ability.extra.chips ~= 0 then
                 return {
