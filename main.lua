@@ -15,20 +15,20 @@ SMODS.Atlas{
 --    }
 --}
 
---mxfj_mod.config_tab = function()
---    return {n = G.UIT.ROOT, config = {align = "m", r = 0.1, padding = 0.1, colour = G.C.BLACK, minw = 8, minh = 6}, nodes = {
---        {n = G.UIT.R, config = {align = "cl", padding = 0, minh = 0.1}, nodes = {}},
---
---        {n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
---            {n = G.UIT.C, config = { align = "cl", padding = 0.05 }, nodes = {
---                create_toggle{ col = true, label = "", scale = 1, w = 0, shadow = true, ref_table = mxfj_config, ref_value = "test_value" },
---            }},
---            {n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
---                { n = G.UIT.T, config = { text = "Test", scale = 0.45, colour = G.C.UI.TEXT_LIGHT }},
---            }},
---        }},
---    }}
---end
+mxfj_mod.config_tab = function()
+    return {n = G.UIT.ROOT, config = {align = "m", r = 0.1, padding = 0.1, colour = G.C.BLACK, minw = 8, minh = 6}, nodes = {
+        {n = G.UIT.R, config = {align = "cl", padding = 0, minh = 0.1}, nodes = {}},
+
+        {n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
+            {n = G.UIT.C, config = { align = "cl", padding = 0.05 }, nodes = {
+                create_toggle{ col = true, label = "", scale = 1, w = 0, shadow = true, ref_table = mxfj_config, ref_value = "patch_pos" },
+            }},
+            {n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+                { n = G.UIT.T, config = { text = "Patchwork Joker: Patch behind suit", scale = 0.45, colour = G.C.UI.TEXT_LIGHT }},
+            }},
+        }},
+    }}
+end
 
 SMODS.load_file("utils.lua")()
 
@@ -257,7 +257,7 @@ SMODS.Atlas{
 
 SMODS.DrawStep{
     key = 'mxfj_patch',
-    order = -1,
+    order = (mxfj_config and mxfj_config.patch_pos and -1) or 1,
     func = function(self)
         if self.ability and self.ability.mxfj_patchwork_sprite then
             if not mxfj_mod.mxfj_patch then mxfj_mod.mxfj_patch = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_patch"], {x = 0,y = 0}) end
@@ -586,7 +586,9 @@ SMODS.Joker {
             if card.ability.extra.chips ~= 0 and card.ability.extra.mult ~= 0 then
                 return {
                     chips = card.ability.extra.chips,
-                    mult = card.ability.extra.mult
+                    extra = {
+                        mult = card.ability.extra.mult
+                    }
                 }
             elseif card.ability.extra.chips ~= 0 then
                 return {
