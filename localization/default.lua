@@ -21,9 +21,8 @@ return {
             j_mxfj_dungeon_jester = {
                 name = "Dungeon Jester",
                 text = {
-                    "All triggered {C:attention}enhancementd{}",
-                    "and {C:attention}editions{} are",
-                    "{C:attention}twice{} as effective"
+                    "All triggered {C:attention}editions{}",
+                    "are {C:attention}twice{} as effective",
                 }
             },
             j_mxfj_crusader = {
