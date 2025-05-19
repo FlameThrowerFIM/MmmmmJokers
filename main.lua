@@ -24,8 +24,12 @@ mxfj_mod.config_tab = function()
                 create_toggle{ col = true, label = "", scale = 1, w = 0, shadow = true, ref_table = mxfj_config, ref_value = "patch_pos" },
             }},
             {n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-                { n = G.UIT.T, config = { text = "Patchwork Joker: Patch behind suit", scale = 0.45, colour = G.C.UI.TEXT_LIGHT }},
+                { n = G.UIT.T, config = { text = "Patchwork Joker: Patch behind suit*", scale = 0.45, colour = G.C.UI.TEXT_LIGHT }},
             }},
+        }},
+
+        {n = G.UIT.R, config = {align = "cm", padding = 0.5}, nodes = {
+            {n = G.UIT.T, config = {text = "*Must restart to apply changes", scale = 0.35, colour = G.C.UI.TEXT_LIGHT}},
         }},
     }}
 end
@@ -185,7 +189,7 @@ SMODS.Joker {
     rarity = 2,
     pos = { x = 4, y = 0 },
     cost = 6,
-    config = {extra = 4},
+    config = {extra = 3},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.c_death
         return {vars = {(G.GAME and G.GAME.probabilities.normal .. '') or 1, card.ability.extra}}
@@ -257,7 +261,7 @@ SMODS.Atlas{
 
 SMODS.DrawStep{
     key = 'mxfj_patch',
-    order = (mxfj_config and mxfj_config.patch_pos and -1) or 1,
+    order = (mxfj_config and mxfj_config.patch_pos and -9) or 9,
     func = function(self)
         if self.ability and self.ability.mxfj_patchwork_sprite then
             if not mxfj_mod.mxfj_patch then mxfj_mod.mxfj_patch = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_patch"], {x = 0,y = 0}) end
