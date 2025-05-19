@@ -129,18 +129,18 @@ SMODS.Joker {
 
 -- Dungeon Jester --
 
--- SMODS.Joker {
---     key = "dungeon_jester",
---     name = "Dungeon Jester",
---     rarity = 3,
---     pos = { x = 2, y = 0 },
---     cost = 8,
---     config = {extra = 0.5},
---     loc_vars = function(self, info_queue, card)
---         return {vars = {card.ability.extra * 100}}
---     end,
---     atlas = "mxfj_sprites"
--- }
+SMODS.Joker {
+    key = "dungeon_jester",
+    name = "Dungeon Jester",
+    rarity = 3,
+    pos = { x = 2, y = 0 },
+    cost = 8,
+    config = {extra = 1},
+    loc_vars = function(self, info_queue, card)
+        return {vars = {card.ability.extra * 100}}
+    end,
+    atlas = "mxfj_sprites"
+}
 
 -- Crusader --
 

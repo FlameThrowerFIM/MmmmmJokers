@@ -32,6 +32,45 @@ function get_cultist_count()
     return cultist_count
 end
 
+-- Modifies Edition Values
+local base_calculate_edition = Card.calculate_edition
+function Card.calculate_edition(self, context)
+    local ret = base_calculate_edition(self, context)
+    if not ret then return end
+    if next(SMODS.find_card('j_mxfj_dungeon_jester')) then
+        multiplier = 2
+    else
+        multiplier = 1
+    end
+    -- Mult
+    if ret.x_mult then ret.x_mult = ret.x_mult * multiplier end
+    if ret.h_mult then ret.h_mult = ret.h_mult * multiplier end
+    if ret.mult then ret.mult = ret.mult * multiplier end
+
+    -- Message overrides
+    if ret.x_mult_mod then
+        ret.x_mult = ret.x_mult_mod * multiplier
+        ret.Xmult_mod = 0
+        ret.message = nil
+    end
+    if ret.mult_mod then 
+        ret.mult = ret.mult_mod * multiplier
+        ret.mult_mod = 0
+        ret.message = nil
+    end
+
+    -- Chips
+    if ret.chips then ret.chips = ret.chips * multiplier end
+
+    -- Message overrides
+    if ret.chip_mod then
+        ret.chips = ret.chip_mod * multiplier
+        ret.chip_mod = 0
+        ret.message = nil
+    end
+    return ret
+end
+
 --- Talisman compat
 to_big = to_big or function(num)
     return num

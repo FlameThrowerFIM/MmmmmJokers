@@ -23,7 +23,7 @@ return {
                 text = {
                     "All triggered {C:attention}enhancementd{}",
                     "and {C:attention}editions{} are",
-                    "{C:attention}#1#%{} more effective"
+                    "{C:attention}twice{} as effective"
                 }
             },
             j_mxfj_crusader = {
