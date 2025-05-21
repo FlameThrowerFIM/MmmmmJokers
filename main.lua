@@ -16,23 +16,24 @@ SMODS.Atlas{
 --}
 
 mxfj_mod.config_tab = function()
-    return {n = G.UIT.ROOT, config = {align = "m", r = 0.1, padding = 0.1, colour = G.C.BLACK, minw = 8, minh = 6}, nodes = {
-        {n = G.UIT.R, config = {align = "cl", padding = 0, minh = 0.1}, nodes = {}},
-
-        {n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
-            {n = G.UIT.C, config = { align = "cl", padding = 0.05 }, nodes = {
-                create_toggle{ col = true, label = "", scale = 1, w = 0, shadow = true, ref_table = mxfj_config, ref_value = "patch_pos" },
-            }},
-            {n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
-                { n = G.UIT.T, config = { text = "Patchwork Joker: Patch behind suit*", scale = 0.45, colour = G.C.UI.TEXT_LIGHT }},
-            }},
-        }},
-
-        {n = G.UIT.R, config = {align = "cm", padding = 0.5}, nodes = {
-            {n = G.UIT.T, config = {text = "*Must restart to apply changes", scale = 0.35, colour = G.C.UI.TEXT_LIGHT}},
-        }},
-    }}
-end
+--mxfj_mod.config_tab = function()
+--    return {n = G.UIT.ROOT, config = {align = "m", r = 0.1, padding = 0.1, colour = G.C.BLACK, minw = 8, minh = 6}, nodes = {
+--        {n = G.UIT.R, config = {align = "cl", padding = 0, minh = 0.1}, nodes = {}},
+--
+--        {n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
+--            {n = G.UIT.C, config = { align = "cl", padding = 0.05 }, nodes = {
+--                create_toggle{ col = true, label = "", scale = 1, w = 0, shadow = true, ref_table = mxfj_config, ref_value = "patch_pos" },
+--            }},
+--            {n = G.UIT.C, config = { align = "c", padding = 0 }, nodes = {
+--                { n = G.UIT.T, config = { text = "Patchwork Joker: Patch behind suit*", scale = 0.45, colour = G.C.UI.TEXT_LIGHT }},
+--            }},
+--        }},
+--
+--        {n = G.UIT.R, config = {align = "cm", padding = 0.5}, nodes = {
+--            {n = G.UIT.T, config = {text = "*Must restart to apply changes", scale = 0.35, colour = G.C.UI.TEXT_LIGHT}},
+--        }},
+--    }}
+--end
 
 SMODS.load_file("utils.lua")()
 
@@ -189,7 +190,7 @@ SMODS.Joker {
     rarity = 2,
     pos = { x = 4, y = 0 },
     cost = 6,
-    config = {extra = 3},
+    config = {extra = 4},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.c_death
         return {vars = {(G.GAME and G.GAME.probabilities.normal .. '') or 1, card.ability.extra}}
@@ -261,12 +262,15 @@ SMODS.Atlas{
 
 SMODS.DrawStep{
     key = 'mxfj_patch',
-    order = (mxfj_config and mxfj_config.patch_pos and -9) or 9,
+    order = 21,
     func = function(self)
         if self.ability and self.ability.mxfj_patchwork_sprite then
             if not mxfj_mod.mxfj_patch then mxfj_mod.mxfj_patch = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_patch"], {x = 0,y = 0}) end
             mxfj_mod.mxfj_patch.role.draw_major = self
             mxfj_mod.mxfj_patch:draw_shader('dissolve', nil, nil, nil, self.children.center)
+            if self.edition then
+                mxfj_mod.mxfj_patch:draw_shader(G.P_CENTERS[self.edition.key].shader, nil, self.ARGS.send_to_shader, nil, self.children.center)
+            end
         end
     end,
     conditions = {vortex = false, facing = 'front'}
@@ -576,14 +580,15 @@ SMODS.Joker {
                 end
             end
             if light or dark > 0 then
-                if light > 0 then
-                    card.ability.extra.chips = card.ability.extra.chips + (card.ability.extra.chips_mod * light)
+                if dark > 0 then
+                    card.ability.extra.chips = card.ability.extra.chips + (card.ability.extra.chips_mod * dark)
                 else
-                    card.ability.extra.mult = card.ability.extra.mult + (card.ability.extra.mult_mod * dark)
+                    card.ability.extra.mult = card.ability.extra.mult + (card.ability.extra.mult_mod * light)
                 end
-                card_eval_status_text(card, 'extra', nil, nil, nil, {
+                return {
                     message = localize('k_upgrade_ex'),
-                })
+                    colour = (dark > 0 and light <= 0 and G.C.BLUE) or (light > 0 and dark <= 0 and G.C.RED) or G.C.FILTER
+                }
             end
         end
         if context.joker_main then
