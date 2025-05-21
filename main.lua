@@ -15,7 +15,6 @@ SMODS.Atlas{
 --    }
 --}
 
-mxfj_mod.config_tab = function()
 --mxfj_mod.config_tab = function()
 --    return {n = G.UIT.ROOT, config = {align = "m", r = 0.1, padding = 0.1, colour = G.C.BLACK, minw = 8, minh = 6}, nodes = {
 --        {n = G.UIT.R, config = {align = "cl", padding = 0, minh = 0.1}, nodes = {}},
