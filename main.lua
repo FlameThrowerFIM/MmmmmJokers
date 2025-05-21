@@ -856,20 +856,25 @@ SMODS.Joker {
         return {vars = {card.ability.extra.xmult_mod, card.ability.extra.xmult}}
     end,
     calculate = function(self, card, context)
-        if context.destroy_card and context.destroy_card ~= card and context.scoring_hand and context.full_hand and no_bp_retrigger(context) then
+        if context.cardarea == G.jokers and context.before and no_bp_retrigger(context) and context.scoring_hand and context.full_hand then
             local faces = {}
             for i = 1, #context.full_hand do
                 if context.full_hand[i]:is_face() and SMODS.in_scoring(context.full_hand[i], context.scoring_hand) then
                     faces[#faces+1] = context.full_hand[i]
-                    G.E_MANAGER:add_event(Event({
-                        func = function()
-                            card.ability.mxfj_head_sprite = context.full_hand[i]:get_id()
-                        return true
-                    end}))
                 end
             end
-            if faces[1] and context.destroy_card == faces[#faces] then
+            card.ability.mxfj_card_to_destroy = faces[#faces]
+        end
+        if context.destroy_card and context.destroy_card ~= card and card.ability.mxfj_card_to_destroy and no_bp_retrigger(context) then
+            if context.destroy_card == card.ability.mxfj_card_to_destroy then
+
+                card.ability.mxfj_card_to_destroy = nil
                 card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_mod
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        card.ability.mxfj_head_sprite = context.destroy_card:get_id()
+                    return true
+                end}))
                 card_eval_status_text(card, 'extra', nil, nil, nil, {
                     message = localize{type='variable',key='a_xmult',vars={card.ability.extra.xmult}},
                     colour = G.C.FILTER
