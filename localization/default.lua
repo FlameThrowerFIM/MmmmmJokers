@@ -213,8 +213,8 @@ return {
             pnr_mxfj_prepper = {
                 name = "Survive",
                 text = {
-                    "Gains {C:mult}+#1#{} Mult for",
-                    "each played hand",
+                    "{C:mult}+#1#{} Mult per hand",
+                    "played this round",
                     "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
                 },
                 unlock={
