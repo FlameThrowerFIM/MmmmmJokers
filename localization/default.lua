@@ -29,8 +29,9 @@ return {
                 name = "Crusader",
                 text = {
                     "All played cards become",
-                    "{C:attention}Steel{} cards when",
-                    "playing a {C:attention}#1#{}",
+                    "{C:attention}Steel{} cards if poker hand",
+                    "contains a {C:attention}#1#{}",
+                    "with {C:attention}1{} face card",
                 }
             },
             j_mxfj_zombie_clown = {
@@ -205,6 +206,33 @@ return {
                     "Each {C:attention}enhanced card{}",
                     "held in hand",
                     "gives {C:mult}+#1#{} Mult",
+                },
+            },
+        },
+        Partner = {
+            pnr_mxfj_prepper = {
+                name = "Survive",
+                text = {
+                    "Gains {C:mult}+#1#{} Mult for",
+                    "each played hand",
+                    "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
+                },
+                unlock={
+                    "Used {C:attention} Prepper{}",
+                    "to win on {C:attention}Gold",
+                    "{C:attention}Stake{} difficulty",
+                },
+            },
+            pnr_mxfj_grave_robber = {
+                name = "Dig",
+                text = {
+                    "Earn {C:money}$#1#{} when a",
+                    "card is destroyed",
+                },
+                unlock={
+                    "Used {C:attention} Grave Robber{}",
+                    "to win on {C:attention}Gold",
+                    "{C:attention}Stake{} difficulty",
                 },
             },
         },

@@ -43,6 +43,15 @@ SMODS.Atlas {
     py = 95
 }
 
+if Partner_API then
+    SMODS.Atlas{
+    key = "mxfj_partners",
+    path = "mxfj_partners.png",
+    px = 46,
+    py = 58,
+}
+end
+
 -- Medusa --
 
 SMODS.Joker {
@@ -131,6 +140,55 @@ SMODS.Joker {
     atlas = "mxfj_sprites"
 }
 
+-- if Partner_API then
+--
+--     -- Dig --
+--
+--     Partner_API.Partner{
+--         key = "grave_robber",
+--         name = "Grave Robber Partner",
+--         unlocked = false,
+--         discovered = true,
+--         pos = {x = 1, y = 0},
+--         atlas = "mxfj_partners",
+--         config = {extra = {related_card = "j_mxfj_grave_robber", dollars = 1}},
+--         loc_vars = function(self, info_queue, card)
+--             local benefits = ((next(SMODS.find_card("j_mxfj_grave_robber")) and 1) or 0)
+--             local dollar_mod = card.ability.extra.dollars + benefits
+--             return { vars = {dollar_mod} }
+--         end,
+--         calculate = function(self, card, context)
+--             mxfj_debug(context)
+--             if context.mxfj_partner_remove_playing_cards then
+--                 local _dollars = 0
+--                 local benefits = ((next(SMODS.find_card("j_mxfj_grave_robber")) and 1) or 0)
+--                 if context.removed then
+--                     _dollars = _dollars + ((card.ability.extra.dollars + benefits) * #context.removed)
+--                 end
+--                 if _dollars > 0 then
+--                     G.E_MANAGER:add_event(Event({
+--                         func = function()
+--                             ease_dollars(_dollars)
+--                             card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('$').._dollars, colour = G.C.MONEY, delay = 0.45})
+--                             return true
+--                         end
+--                     }))
+--                 end
+--             end
+--         end,
+--         check_for_unlock = function(self, args)
+--             for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+--                 if v.key == "j_mxfj_grave_robber" then
+--                     if get_joker_win_sticker(v, true) >= 8 then
+--                         return true
+--                     end
+--                     break
+--                 end
+--             end
+--         end,
+--     }
+-- end
+
 -- Dungeon Jester --
 
 SMODS.Joker {
@@ -156,25 +214,33 @@ SMODS.Joker {
     cost = 6,
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.m_steel
-        return {vars = {localize("Royal Flush", "poker_hands")}}
+        return {vars = {localize("Straight Flush", "poker_hands")}}
     end,
     calculate = function(self, card, context)
-        if context.cardarea == G.jokers and context.before and context.scoring_hand and no_bp_retrigger(context) then
-            local _, _, _, _, disp_text = G.FUNCS.get_poker_hand_info(context.scoring_hand)
-            if disp_text == "Royal Flush" then
+        if context.cardarea == G.jokers and context.before and context.scoring_hand and context.poker_hands and no_bp_retrigger(context) then
+            if next(context.poker_hands["Straight Flush"]) then
+                local has_face = false
                 for _, v in ipairs(context.scoring_hand) do
-                    v:set_ability(G.P_CENTERS.m_steel)
-                    G.E_MANAGER:add_event(Event({
-                        func = function()
-                            v:juice_up()
-                            return true
-                        end
-                    }))
+                    if v:is_face() then
+                        has_face = true
+                        break
+                    end
                 end
-                return {
-                    message = localize('k_mxfj_steel'),
-                    colour = G.C.UI.TEXT_INACTIVE,
-                }
+                if has_face then
+                    for _, v in ipairs(context.scoring_hand) do
+                        v:set_ability(G.P_CENTERS.m_steel)
+                        G.E_MANAGER:add_event(Event({
+                            func = function()
+                                v:juice_up()
+                                return true
+                            end
+                        }))
+                    end
+                    return {
+                        message = localize('k_mxfj_steel'),
+                        colour = G.C.UI.TEXT_INACTIVE,
+                    }
+                end
             end
         end
     end,
@@ -189,7 +255,7 @@ SMODS.Joker {
     rarity = 2,
     pos = { x = 4, y = 0 },
     cost = 6,
-    config = {extra = 4},
+    config = {extra = 3},
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue+1] = G.P_CENTERS.c_death
         return {vars = {(G.GAME and G.GAME.probabilities.normal .. '') or 1, card.ability.extra}}
@@ -504,7 +570,6 @@ SMODS.Joker {
                 if hand_space > 0 then
                     G.E_MANAGER:add_event(Event({
                         func = function()
-                            card:juice_up(0.3, 0.5)
                             G.FUNCS.draw_from_deck_to_hand(hand_space)
                             card.ability.mxfj_hand_played = nil
                         return true
@@ -927,6 +992,61 @@ SMODS.Joker {
     end,
     atlas = "mxfj_sprites"
 }
+
+if Partner_API then
+
+    -- Survive --
+
+    Partner_API.Partner{
+        key = "prepper",
+        name = "Prepper Partner",
+        unlocked = false,
+        discovered = true,
+        pos = {x = 0, y = 0},
+        atlas = "mxfj_partners",
+        config = {extra = {related_card = "j_mxfj_prepper", mult = 0, mult_mod = 2}},
+        loc_vars = function(self, info_queue, card)
+            local benefits = ((next(SMODS.find_card("j_mxfj_prepper")) and 1) or 0)
+            local _mult_mod = card.ability.extra.mult_mod + benefits
+            return { vars = {_mult_mod, card.ability.extra.mult} }
+        end,
+        calculate = function(self, card, context)
+        if context.partner_after then
+            card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
+            return {
+                message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult}},
+            }
+        end
+        if context.partner_main and card.ability.extra.mult ~= 0 then
+            return {
+                mult = card.ability.extra.mult
+            }
+        end
+        if context.partner_end_of_round then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    card.ability.extra.mult = 0
+                    card_eval_status_text(card, 'extra', nil, nil, nil, {
+                        message = localize('k_reset'),
+                        colour = G.C.RED
+                    })
+                return true
+            end}))
+        end
+    end,
+        check_for_unlock = function(self, args)
+            for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+                if v.key == "j_mxfj_prepper" then
+                    if get_joker_win_sticker(v, true) >= 8 then
+                        return true
+                    end
+                    break
+                end
+            end
+        end,
+    }
+
+end
 
 -- Odontophobia --
 

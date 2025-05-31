@@ -37,10 +37,9 @@ local base_calculate_edition = Card.calculate_edition
 function Card.calculate_edition(self, context)
     local ret = base_calculate_edition(self, context)
     if not ret then return end
+    local multiplier = 1
     if next(SMODS.find_card('j_mxfj_dungeon_jester')) then
-        multiplier = 2
-    else
-        multiplier = 1
+        multiplier = 2 ^ #SMODS.find_card('j_mxfj_dungeon_jester')
     end
     -- Mult
     if ret.x_mult then ret.x_mult = ret.x_mult * multiplier end
@@ -53,7 +52,7 @@ function Card.calculate_edition(self, context)
         ret.Xmult_mod = 0
         ret.message = nil
     end
-    if ret.mult_mod then 
+    if ret.mult_mod then
         ret.mult = ret.mult_mod * multiplier
         ret.mult_mod = 0
         ret.message = nil
