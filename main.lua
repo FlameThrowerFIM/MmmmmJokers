@@ -1022,17 +1022,6 @@ if Partner_API then
                 mult = card.ability.extra.mult
             }
         end
-        if context.partner_end_of_round then
-            G.E_MANAGER:add_event(Event({
-                func = function()
-                    card.ability.extra.mult = 0
-                    card_eval_status_text(card, 'extra', nil, nil, nil, {
-                        message = localize('k_reset'),
-                        colour = G.C.RED
-                    })
-                return true
-            end}))
-        end
     end,
         check_for_unlock = function(self, args)
             for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
