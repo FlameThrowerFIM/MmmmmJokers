@@ -218,7 +218,7 @@ return {
                     "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
                 },
                 unlock={
-                    "Used {C:attention} Prepper{}",
+                    "Used{C:attention} Prepper{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",
                 },
@@ -230,7 +230,7 @@ return {
                     "card is destroyed",
                 },
                 unlock={
-                    "Used {C:attention} Grave Robber{}",
+                    "Used{C:attention} Grave Robber{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",
                 },
