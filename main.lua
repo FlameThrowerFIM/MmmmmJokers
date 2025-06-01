@@ -425,7 +425,7 @@ SMODS.Joker {
         return {vars = {card.ability.extra.mult_mod, card.ability.extra.mult}}
     end,
     calculate = function(self, card, context)
-        if context.destroy_card and context.destroy_card ~= card and context.scoring_hand and context.scoring_name then
+        if context.destroy_card and context.destroy_card ~= card and context.scoring_hand and context.scoring_name and no_bp_retrigger(context) then
             if context.scoring_name == "High Card" then
                 local aces = {}
                 for i = 1 , #context.scoring_hand do
