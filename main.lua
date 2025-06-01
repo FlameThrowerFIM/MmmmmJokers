@@ -140,54 +140,51 @@ SMODS.Joker {
     atlas = "mxfj_sprites"
 }
 
--- if Partner_API then
---
---     -- Dig --
---
---     Partner_API.Partner{
---         key = "grave_robber",
---         name = "Grave Robber Partner",
---         unlocked = false,
---         discovered = true,
---         pos = {x = 1, y = 0},
---         atlas = "mxfj_partners",
---         config = {extra = {related_card = "j_mxfj_grave_robber", dollars = 1}},
---         loc_vars = function(self, info_queue, card)
---             local benefits = ((next(SMODS.find_card("j_mxfj_grave_robber")) and 1) or 0)
---             local dollar_mod = card.ability.extra.dollars + benefits
---             return { vars = {dollar_mod} }
---         end,
---         calculate = function(self, card, context)
---             mxfj_debug(context)
---             if context.mxfj_partner_remove_playing_cards then
---                 local _dollars = 0
---                 local benefits = ((next(SMODS.find_card("j_mxfj_grave_robber")) and 1) or 0)
---                 if context.removed then
---                     _dollars = _dollars + ((card.ability.extra.dollars + benefits) * #context.removed)
---                 end
---                 if _dollars > 0 then
---                     G.E_MANAGER:add_event(Event({
---                         func = function()
---                             ease_dollars(_dollars)
---                             card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('$').._dollars, colour = G.C.MONEY, delay = 0.45})
---                             return true
---                         end
---                     }))
---                 end
---             end
---         end,
---         check_for_unlock = function(self, args)
---             for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
---                 if v.key == "j_mxfj_grave_robber" then
---                     if get_joker_win_sticker(v, true) >= 8 then
---                         return true
---                     end
---                     break
---                 end
---             end
---         end,
---     }
--- end
+if Partner_API then
+
+    -- Dig --
+
+    Partner_API.Partner{
+        key = "grave_robber",
+        name = "Grave Robber Partner",
+        unlocked = false,
+        discovered = true,
+        pos = {x = 1, y = 0},
+        atlas = "mxfj_partners",
+        config = {extra = {related_card = "j_mxfj_grave_robber", dollars = 2}},
+        loc_vars = function(self, info_queue, card)
+            local benefits = ((next(SMODS.find_card("j_mxfj_grave_robber")) and 2) or 0)
+            local dollar_mod = card.ability.extra.dollars + benefits
+            return { vars = {dollar_mod} }
+        end,
+        calculate = function(self, card, context)
+            if context.remove_playing_cards then
+                local _dollars = 0
+                local benefits = ((next(SMODS.find_card("j_mxfj_grave_robber")) and 2) or 0)
+                if context.removed then
+                    _dollars = (card.ability.extra.dollars + benefits) * #context.removed
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            ease_dollars(_dollars)
+                            card_eval_status_text(card, 'extra', nil, nil, nil, {message = localize('$').._dollars, colour = G.C.MONEY, delay = 0.45})
+                            return true
+                        end
+                    }))
+                end
+            end
+        end,
+        check_for_unlock = function(self, args)
+            for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+                if v.key == "j_mxfj_grave_robber" then
+                    if get_joker_win_sticker(v, true) >= 8 then
+                        return true
+                    end
+                    break
+                end
+            end
+        end,
+    }
+end
 
 -- Dungeon Jester --
 
@@ -1102,7 +1099,7 @@ SMODS.Joker {
                         for k, v in pairs(chosen_joker.ability) do
                             if type(v) == 'table' then
                                 card.ability[k] = copy_table(v)
-                            else
+                            elseif not SMODS.Stickers[k] then
                                 card.ability[k] = v
                             end
                         end
@@ -1111,6 +1108,14 @@ SMODS.Joker {
                 }))
             end
         end
+    end,
+    in_pool = function()
+        if G.jokers and G.jokers.cards then
+            for _, v in ipairs(G.jokers.cards) do
+                if v.ability and v.ability.mxfj_is_pod then return false end
+            end
+        end
+        return true
     end,
     atlas = "mxfj_sprites"
 }
@@ -1138,7 +1143,7 @@ function Card:calculate_joker(context)
                         for k, v in pairs(chosen_joker.ability) do
                             if type(v) == 'table' then
                                 self.ability[k] = copy_table(v)
-                            else
+                            elseif not SMODS.Stickers[k] then
                                 self.ability[k] = v
                             end
                         end
