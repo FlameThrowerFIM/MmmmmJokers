@@ -884,7 +884,7 @@ SMODS.DrawStep{
     key = 'mxfj_head',
     order = 29,
     func = function(self)
-        if self.config and self.config.center.key == 'j_mxfj_headless_horseman' and self.ability and self.ability.mxfj_head_sprite then
+        if self.config and self.config.center.key == 'j_mxfj_headless_horseman' and self.ability and self.ability.mxfj_head_sprite and self.ability.mxfj_head_show_sprite then
             if not mxfj_mod.mxfj_head_king then mxfj_mod.mxfj_head_king = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 1,y = 2}) end
             if not mxfj_mod.mxfj_head_queen then mxfj_mod.mxfj_head_queen = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 2,y = 2}) end
             if not mxfj_mod.mxfj_head_jack then mxfj_mod.mxfj_head_jack = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 3,y = 2}) end
@@ -932,9 +932,10 @@ SMODS.Joker {
 
                 card.ability.mxfj_card_to_destroy = nil
                 card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.xmult_mod
+                card.ability.mxfj_head_sprite = context.destroy_card:get_id()
                 G.E_MANAGER:add_event(Event({
                     func = function()
-                        card.ability.mxfj_head_sprite = context.destroy_card:get_id()
+                        card.ability.mxfj_head_show_sprite = true
                     return true
                 end}))
                 card_eval_status_text(card, 'extra', nil, nil, nil, {
