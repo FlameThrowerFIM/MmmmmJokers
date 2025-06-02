@@ -1008,7 +1008,7 @@ if Partner_API then
             return { vars = {_mult_mod, card.ability.extra.mult} }
         end,
         calculate = function(self, card, context)
-        if context.partner_after then
+        if context.partner_before then
             card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
             return {
                 message = localize{type='variable',key='a_mult',vars={card.ability.extra.mult}},
