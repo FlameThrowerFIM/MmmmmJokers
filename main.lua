@@ -589,7 +589,7 @@ SMODS.Joker {
 mxfj_mod.light_suits = {'Diamonds', 'Hearts'}
 mxfj_mod.dark_suits = {'Spades', 'Clubs'}
 
-if PB_UTIL and PB_UTIL.config.suits_enabled then
+if PB_UTIL and PB_UTIL.config and PB_UTIL.config.suits_enabled then
     table.insert(mxfj_mod.light_suits, 'paperback_Stars')
     table.insert(mxfj_mod.dark_suits, 'paperback_Crowns')
 end
