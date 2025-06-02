@@ -882,7 +882,7 @@ SMODS.Joker {
 
 SMODS.DrawStep{
     key = 'mxfj_head',
-    order = 29,
+    order = 41,
     func = function(self)
         if self.config and self.config.center.key == 'j_mxfj_headless_horseman' and self.ability and self.ability.mxfj_head_sprite and self.ability.mxfj_head_show_sprite then
             if not mxfj_mod.mxfj_head_king then mxfj_mod.mxfj_head_king = Sprite(0, 0, G.CARD_W, G.CARD_H, G.ASSET_ATLAS["mxfj_sprites"], {x = 1,y = 2}) end
