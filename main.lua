@@ -1320,3 +1320,44 @@ SMODS.Joker {
             (card.area and card.area.config.type == 'title') and 'guitarNoDoIt' or 'guitarDoIt')
     end
 }
+
+-- Jokers96 --
+
+SMODS.Joker {
+    key = "jokers96",
+    blueprint_compat = false,
+    atlas = "mxfj_sprites",
+    rarity = 3,
+    cost = 7,
+    pos = { x = 0, y = 3 },
+    config = { extra = {} },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = { key = 'red_seal', set = 'Other' }
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_polychrome
+        return {}
+    end,
+    
+    calculate = function(self, card, context)
+    if context.before and context.main_eval and not context.blueprint then
+            local seals = 0
+            for _, scored_card in ipairs(context.scoring_hand) do
+                if scored_card.seal == "Red" then
+                    seals = seals + 1
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            scored_card:set_edition("e_polychrome", true)
+                            scored_card:juice_up()
+                            return true
+                        end
+                    }))
+                end
+            end
+            if seals > 0 then
+                return {
+                    message = localize('k_mxfj_aesthetic'),
+                    colour = G.C.RED
+                }
+            end
+        end
+end
+}

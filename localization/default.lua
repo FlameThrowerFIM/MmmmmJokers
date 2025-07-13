@@ -222,6 +222,16 @@ return {
                     "If {C:attention}Poker Hand{} is",
                     "a {C:attention}#1#{}",
                     "retrigger all played cards",
+                    "{s:0.8}poker hand changes",
+                    "{s:0.8}at end of round",
+                },
+            },
+            j_mxfj_jokers96 = {
+                name = "Jokers96",
+                text = {
+                    "Played cards with",
+                    "{C:attention}red seals{} become",
+                    "{C:dark_edition}Polychrome{} when scored"
                 },
             },
         },
@@ -270,7 +280,9 @@ return {
             k_mxfj_steel = "Steel!",
             k_mxfj_stone = "Stone!",
             k_mxfj_patched = "Patched!",
+            k_mxfj_aesthetic = "Aesthetic!",
             k_mxfk_delivery = "Delivery!"
+            
         },
         v_dictionary = {
             a_mxfj_plus_joker = "+#1# Joker",
