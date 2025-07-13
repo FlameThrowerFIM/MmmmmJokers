@@ -52,6 +52,35 @@ if Partner_API then
 }
 end
 
+-- Initialize Food Pool if another mod hasn't made it
+
+vanilla_food = {
+  j_gros_michel = true,
+  j_egg = true,
+  j_ice_cream = true,
+  j_cavendish = true,
+  j_turtle_bean = true,
+  j_diet_cola = true,
+  j_popcorn = true,
+  j_ramen = true,
+  j_selzer = true,
+}
+
+if not SMODS.ObjectTypes.Food then
+  SMODS.ObjectType {
+    key = 'Food',
+    default = 'j_egg',
+    cards = {},
+    inject = function(self)
+      SMODS.ObjectType.inject(self)
+      -- Insert base game food jokers
+      for k, _ in pairs(vanilla_food) do
+        self:inject_card(G.P_CENTERS[k])
+      end
+    end
+  }
+end
+
 -- Medusa --
 
 SMODS.Joker {
@@ -1211,4 +1240,39 @@ SMODS.Joker {
         end
     end,
     atlas = "mxfj_sprites"
+}
+
+-- Delivery Boy --
+
+SMODS.Joker {
+    key = "delivery",
+    name = "Delivery Boy",
+    atlas = "mxfj_sprites",
+    rarity = 2,
+    pos = { x = 2, y = 3 },
+    soul_pos = { x = 3, y = 3 },
+    cost = 6,
+    config = {extra = {}},
+    blueprint_compat = true,
+    loc_vars = function(self, info_queue, card)
+        return {vars = {}}
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and context.game_over == false and
+        context.main_eval and G.GAME.blind.boss then
+      G.E_MANAGER:add_event(Event({
+        func = function()
+          SMODS.add_card {
+            set = 'Food',
+            key_append = 'jokedash'
+          }
+          return true
+        end
+      }))
+      return {
+        message = localize('k_mxfk_delivery'),
+        colour = G.C.GREEN,
+      }
+    end
+end
 }

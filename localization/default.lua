@@ -208,6 +208,14 @@ return {
                     "gives {C:mult}+#1#{} Mult",
                 },
             },
+            j_mxfj_delivery = {
+                name = "Delivery Boy",
+                text = {
+                    "After defeating a",
+                    "{C:attention}Boss Blind{}, create a",
+                    "{C:attention}Food Joker{}",
+                },
+            },
         },
         Partner = {
             pnr_mxfj_prepper = {
@@ -248,12 +256,13 @@ return {
     },
     misc = {
         dictionary = {
-            k_mxfj_brains = "Brains",
-            k_mxfj_chips = "Chips",
-            k_mxfj_halved = "Halved",
-            k_mxfj_steel = "Steel",
-            k_mxfj_stone = "Stone",
-            k_mxfj_patched = "Patched"
+            k_mxfj_brains = "Brains!",
+            k_mxfj_chips = "Chips!",
+            k_mxfj_halved = "Halved!",
+            k_mxfj_steel = "Steel!",
+            k_mxfj_stone = "Stone!",
+            k_mxfj_patched = "Patched!",
+            k_mxfk_delivery = "Delivery!"
         },
         v_dictionary = {
             a_mxfj_plus_joker = "+#1# Joker",
