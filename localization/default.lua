@@ -213,7 +213,15 @@ return {
                 text = {
                     "After defeating a",
                     "{C:attention}Boss Blind{}, create a",
-                    "{C:attention}Food Joker{}",
+                    "random {C:attention}Food Joker{}",
+                },
+            },
+            j_mxfj_guitar_pick = {
+                name = "Guitar Pick",
+                text = {
+                    "If {C:attention}Poker Hand{} is",
+                    "a {C:attention}#1#{}",
+                    "retrigger all played cards",
                 },
             },
         },
