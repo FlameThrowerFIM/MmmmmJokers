@@ -209,7 +209,7 @@ return {
                 },
             },
             j_mxfj_delivery = {
-                name = "Delivery Boy",
+                name = "Delivery Guy",
                 text = {
                     "After defeating a",
                     "{C:attention}Boss Blind{}, create a",
@@ -232,6 +232,14 @@ return {
                     "Played cards with",
                     "{C:attention}red seals{} become",
                     "{C:dark_edition}Polychrome{} when scored"
+                },
+            },
+            j_mxfj_mariachi = {
+                name = "Mariachi",
+                text = {
+                    "{C:chips}+#1#{} Chips for each",
+                    "retriggered {C:attention}scoring card{}",
+                    "per hand"
                 },
             },
         },

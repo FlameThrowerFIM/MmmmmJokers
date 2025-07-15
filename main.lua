@@ -1259,16 +1259,18 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.end_of_round and context.game_over == false and
-        context.main_eval and G.GAME.blind.boss then
-      G.E_MANAGER:add_event(Event({
-        func = function()
-          SMODS.add_card {
-            set = 'Food',
-            key_append = 'jokedash'
-          }
-          return true
-        end
-      }))
+        context.main_eval and G.GAME.blind.boss and #G.jokers.cards + G.GAME.joker_buffer < G.jokers.config.card_limit then
+            G.GAME.joker_buffer = G.GAME.joker_buffer + 1
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                SMODS.add_card {
+                    set = 'Food',
+                    key_append = 'jokedash'
+                }
+                G.GAME.joker_buffer = 0
+                return true
+            end
+        }))
       return {
         message = localize('k_mxfk_delivery'),
         colour = G.C.GREEN,
@@ -1361,3 +1363,44 @@ SMODS.Joker {
         end
 end
 }
+
+-- Mariachi --
+--[[
+SMODS.Joker {
+  key = "mariachi",
+  config = {
+    extra = {
+        add_chips = 25,
+        chips = 0
+    }
+  },
+  rarity = 1,
+  pos = { x = 5, y = 3 },
+  atlas = "mxfj_sprites",
+  cost = 3,
+  blueprint_compat = true,
+
+  loc_vars = function(self, info_queue, card)
+        return {card.ability.extra.add_chips, card.ability.extra.chips}
+    end,
+  calculate = function(self, card, context)
+    if G.play and not context.blueprint then
+        card.ability.extra.chips = card.ability.extra.chips - #context.scoring_hand * card.ability.extra.add_chips
+    end
+
+    if context.individual and context.cardarea == G.play and not context.blueprint then
+        card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.add_chips
+    end
+
+    if context.joker_main and card.ability.extra.chips > 0 then
+        return {
+            chips = card.ability.extra.chips
+        }
+    end
+
+    if context.after and not context.blueprint then
+        card.ability.extra.chips = 0
+    end
+
+  end,
+}]]
