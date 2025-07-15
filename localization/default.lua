@@ -214,6 +214,7 @@ return {
                     "After defeating a",
                     "{C:attention}Boss Blind{}, create a",
                     "random {C:attention}Food Joker{}",
+                    "{C:inactive}(Must have room)"
                 },
             },
             j_mxfj_guitar_pick = {

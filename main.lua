@@ -1365,13 +1365,13 @@ end
 }
 
 -- Mariachi --
---[[
 SMODS.Joker {
   key = "mariachi",
   config = {
     extra = {
         add_chips = 25,
-        chips = 0
+        chips = 0,
+        counter = 0
     }
   },
   rarity = 1,
@@ -1381,15 +1381,18 @@ SMODS.Joker {
   blueprint_compat = true,
 
   loc_vars = function(self, info_queue, card)
-        return {card.ability.extra.add_chips, card.ability.extra.chips}
+        return {vars = {card.ability.extra.add_chips, card.ability.extra.chips, card.ability.extra.counter}}
     end,
   calculate = function(self, card, context)
-    if G.play and not context.blueprint then
-        card.ability.extra.chips = card.ability.extra.chips - #context.scoring_hand * card.ability.extra.add_chips
-    end
+    --if G.play and not context.blueprint then
+    --    card.ability.extra.chips = card.ability.extra.chips - #context.scoring_hand * card.ability.extra.add_chips
+    --end
 
     if context.individual and context.cardarea == G.play and not context.blueprint then
-        card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.add_chips
+        card.ability.extra.counter = card.ability.extra.counter + 1
+        if card.ability.extra.counter > #context.scoring_hand then
+            card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.add_chips
+        end
     end
 
     if context.joker_main and card.ability.extra.chips > 0 then
@@ -1400,7 +1403,8 @@ SMODS.Joker {
 
     if context.after and not context.blueprint then
         card.ability.extra.chips = 0
+        card.ability.extra.counter = 0
     end
 
   end,
-}]]
+}
