@@ -1377,7 +1377,7 @@ SMODS.Joker {
   key = "mariachi",
   config = {
     extra = {
-        add_chips = 25,
+        add_chips = 30,
         chips = 0,
         counter = 0
     }
