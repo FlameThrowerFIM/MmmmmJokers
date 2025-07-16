@@ -243,6 +243,15 @@ return {
                     "per hand"
                 },
             },
+            j_mxfj_match_box = {
+                name = "Match Box",
+                text = {
+                    "When you {C:attention}set the score on fire{},",
+                    "give {C:money}$#1#{} dollars",
+                    "Loses {C:money}$#2#{} every time you",
+                    "{C:attention}set the score on fire"
+                },
+            },
         },
         Partner = {
             pnr_mxfj_prepper = {
@@ -290,7 +299,8 @@ return {
             k_mxfj_stone = "Stone!",
             k_mxfj_patched = "Patched!",
             k_mxfj_aesthetic = "Aesthetic!",
-            k_mxfk_delivery = "Delivery!"
+            k_mxfk_delivery = "Delivery!",
+            k_mxfk_match_box = "Ran Out!"
             
         },
         v_dictionary = {

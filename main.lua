@@ -34,6 +34,14 @@ SMODS.Atlas{
 --    }}
 --end
 
+-- Tailsman Stuff
+to_big = to_big or function(num)
+  return num
+end
+to_number = to_number or function(num)
+  return num
+end
+
 SMODS.load_file("utils.lua")()
 
 SMODS.Atlas {
@@ -1407,4 +1415,78 @@ SMODS.Joker {
     end
 
   end,
+}
+
+-- Match Box --
+SMODS.Joker {
+    key = "match_box",
+    config = {
+        extra = {
+            initial_money = 10,
+            money_yes = 10,
+            money_no = 2,
+            fire = false
+        }
+    },
+    rarity = 1,
+    pos = { x = 0, y = 4 },
+    atlas = "mxfj_sprites",
+    cost = 5,
+    blueprint_compat = false,
+    eternal_compat = false,
+
+    loc_vars = function(self, info_queue, card)
+        return {vars = {card.ability.extra.money_yes, card.ability.extra.money_no}}
+    end,
+
+    calculate = function(self, card, context)
+        if context.final_scoring_step and (hand_chips * mult > G.GAME.blind.chips) and not context.blueprint then
+            card.ability.extra.fire = true
+        end
+        if context.end_of_round and not context.blueprint and context.main_eval and card.ability.extra.fire then
+            local dollars = card.ability.extra.money_yes
+            card.ability.extra.money_yes = card.ability.extra.money_yes - card.ability.extra.money_no
+
+            if card.ability.extra.money_yes >= card.ability.extra.initial_money - card.ability.extra.money_no then
+                card.children.center:set_sprite_pos { x = 1, y = 4 }
+            elseif card.ability.extra.money_yes >= card.ability.extra.initial_money - card.ability.extra.money_no * 2 then
+                card.children.center:set_sprite_pos { x = 2, y = 4 }
+            elseif card.ability.extra.money_yes >= card.ability.extra.initial_money - card.ability.extra.money_no * 3 then
+                card.children.center:set_sprite_pos { x = 3, y = 4 }
+            elseif card.ability.extra.money_yes >= card.ability.extra.initial_money - card.ability.extra.money_no * 4 then
+                card.children.center:set_sprite_pos { x = 4, y = 4 }
+            end
+
+            if card.ability.extra.money_yes > 0 then
+                G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money_yes
+                return {
+                    dollars = dollars,
+                    func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                           G.E_MANAGER:add_event(Event({
+                            func = function()
+                                G.GAME.dollar_buffer = 0
+                                return true
+                            end
+                        }))
+                   end
+                }
+            else
+                G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money_yes
+                return {
+                    dollars = dollars,
+                    message = localize('k_mxfk_match_box'),
+                    colour = G.C.FILTER,
+                    func = function() -- This is for timing purposes, it runs after the dollar manipulation
+                           G.E_MANAGER:add_event(Event({
+                            func = function()
+                                G.GAME.dollar_buffer = 0
+                                card:start_dissolve()
+                                return true
+                            end
+                        }))
+                   end
+                }
+            end
+        end
+    end
 }
