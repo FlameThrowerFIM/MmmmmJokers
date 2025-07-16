@@ -1440,7 +1440,7 @@ SMODS.Joker {
     end,
 
     calculate = function(self, card, context)
-        if context.final_scoring_step and (hand_chips * mult > to_big(G.GAME.blind.chips)) and not context.blueprint then
+        if context.final_scoring_step and (hand_chips * mult >= to_big(G.GAME.blind.chips)) and not context.blueprint then
             card.ability.extra.fire = true
         end
         if context.end_of_round and not context.blueprint and context.main_eval and card.ability.extra.fire then
