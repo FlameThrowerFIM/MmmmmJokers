@@ -301,11 +301,12 @@ return {
             k_mxfj_aesthetic = "Aesthetic!",
             k_mxfk_delivery = "Delivery!",
             k_mxfk_match_box = "Ran Out!"
-            
+
         },
         v_dictionary = {
             a_mxfj_plus_joker = "+#1# Joker",
-            a_mxfj_plus_jokers = "+#1# Jokers"
+            a_mxfj_plus_jokers = "+#1# Jokers",
+            a_mxfj_dollars_minus = "-$#1#"
         }
     }
 }

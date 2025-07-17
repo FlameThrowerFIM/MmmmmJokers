@@ -1346,7 +1346,7 @@ SMODS.Joker {
         info_queue[#info_queue + 1] = G.P_CENTERS.e_polychrome
         return {}
     end,
-    
+
     calculate = function(self, card, context)
     if context.before and context.main_eval and not context.blueprint then
             local seals = 0
@@ -1422,10 +1422,8 @@ SMODS.Joker {
     key = "match_box",
     config = {
         extra = {
-            initial_money = 10,
-            money_yes = 10,
-            money_no = 2,
-            fire = false
+            dollars = 10,
+            dollars_mod = 2,
         }
     },
     rarity = 1,
@@ -1436,55 +1434,53 @@ SMODS.Joker {
     eternal_compat = false,
 
     loc_vars = function(self, info_queue, card)
-        return {vars = {card.ability.extra.money_yes, card.ability.extra.money_no}}
+        return {vars = {card.ability.extra.dollars, card.ability.extra.dollars_mod}}
     end,
 
     calculate = function(self, card, context)
-        if context.final_scoring_step and (hand_chips * mult >= to_big(G.GAME.blind.chips)) and not context.blueprint then
-            card.ability.extra.fire = true
-        end
-        if context.end_of_round and not context.blueprint and context.main_eval and card.ability.extra.fire then
-            local dollars = card.ability.extra.money_yes
-            card.ability.extra.money_yes = card.ability.extra.money_yes - card.ability.extra.money_no
-
-            if card.ability.extra.money_yes >= card.ability.extra.initial_money - card.ability.extra.money_no then
-                card.children.center:set_sprite_pos { x = 1, y = 4 }
-            elseif card.ability.extra.money_yes >= card.ability.extra.initial_money - card.ability.extra.money_no * 2 then
-                card.children.center:set_sprite_pos { x = 2, y = 4 }
-            elseif card.ability.extra.money_yes >= card.ability.extra.initial_money - card.ability.extra.money_no * 3 then
-                card.children.center:set_sprite_pos { x = 3, y = 4 }
-            elseif card.ability.extra.money_yes >= card.ability.extra.initial_money - card.ability.extra.money_no * 4 then
-                card.children.center:set_sprite_pos { x = 4, y = 4 }
-            end
-
-            if card.ability.extra.money_yes > 0 then
-                G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money_yes
+        if context.final_scoring_step and no_bp_retrigger(context) then
+            if to_big(G.GAME.blind.chips) <= to_big(hand_chips) * to_big(mult) then
+                local dollars = card.ability.extra.dollars
+                card.ability.mxfj_matchbox_trigger = (card.ability.mxfj_matchbox_trigger or 0) + 1
+                card.ability.extra.dollars = card.ability.extra.dollars - card.ability.extra.dollars_mod
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        if not (card.ability.mxfj_matchbox_trigger > 4) then
+                            card.children.center:set_sprite_pos { x = card.ability.mxfj_matchbox_trigger, y = 4 }
+                        end
+                    return true
+                end}))
                 return {
                     dollars = dollars,
-                    func = function() -- This is for timing purposes, it runs after the dollar manipulation
-                           G.E_MANAGER:add_event(Event({
+                }
+            end
+        end
+        if context.cardarea == G.jokers and context.after and no_bp_retrigger(context) then
+            if card.ability.extra.dollars <= 0 then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        play_sound('tarot1')
+                        card.T.r = -0.2
+                        card:juice_up(0.3, 0.4)
+                        card.states.drag.is = true
+                        card.children.center.pinch.x = true
+                        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
                             func = function()
-                                G.GAME.dollar_buffer = 0
-                                return true
-                            end
-                        }))
-                   end
+                                    G.jokers:remove_card(card)
+                                    card:remove()
+                                    card = nil
+                                return true; end}))
+                        return true
+                    end
+                }))
+                return {
+                    message = localize('k_mxfk_match_box'),
+                    colour = G.C.MONEY
                 }
             else
-                G.GAME.dollar_buffer = (G.GAME.dollar_buffer or 0) + card.ability.extra.money_yes
                 return {
-                    dollars = dollars,
-                    message = localize('k_mxfk_match_box'),
-                    colour = G.C.FILTER,
-                    func = function() -- This is for timing purposes, it runs after the dollar manipulation
-                           G.E_MANAGER:add_event(Event({
-                            func = function()
-                                G.GAME.dollar_buffer = 0
-                                card:start_dissolve()
-                                return true
-                            end
-                        }))
-                   end
+                    message = localize{type='variable',key='a_mxfj_dollars_minus',vars={card.ability.extra.dollars_mod}},
+                    colour = G.C.MONEY
                 }
             end
         end
