@@ -1452,6 +1452,10 @@ SMODS.Joker {
                 end}))
                 return {
                     dollars = dollars,
+                    extra = {
+                        message = localize{type='variable',key='a_mxfj_dollars_minus',vars={card.ability.extra.dollars_mod}},
+                        colour = G.C.MONEY
+                    }
                 }
             end
         end
@@ -1475,11 +1479,6 @@ SMODS.Joker {
                 }))
                 return {
                     message = localize('k_mxfk_match_box'),
-                    colour = G.C.MONEY
-                }
-            else
-                return {
-                    message = localize{type='variable',key='a_mxfj_dollars_minus',vars={card.ability.extra.dollars_mod}},
                     colour = G.C.MONEY
                 }
             end
