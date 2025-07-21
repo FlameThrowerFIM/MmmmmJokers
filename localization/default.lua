@@ -252,6 +252,15 @@ return {
                     "{C:attention}set the score on fire"
                 },
             },
+            j_mxfj_record_shop = {
+                name = "Record Shop",
+                text = {
+                    "This Joker gains",
+                    "{X:mult,C:white} X#1# {} Mult for",
+                    "every unique {C:attention}consumable{} used",
+                    "{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)",
+                },
+            },
         },
         Partner = {
             pnr_mxfj_prepper = {

@@ -1485,3 +1485,43 @@ SMODS.Joker {
         end
     end
 }
+
+-- Record Shop
+SMODS.Joker {
+    key = "record_shop",
+    blueprint_compat = true,
+    perishable_compat = false,
+    rarity = 2,
+    cost = 6,
+    pos = { x = 1, y = 3 },
+    atlas = "mxfj_sprites",
+    config = { extra = { Xmult = 1, Xmult_mod = 0.1, card_index = {} } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.Xmult_mod, card.ability.extra.Xmult } }
+    end,
+    calculate = function(self, card, context)
+        if context.using_consumeable and not context.blueprint then
+            local in_index = false
+            for _, i in ipairs(card.ability.extra.card_index) do
+                if i == context.consumeable.config.center.key then
+                    in_index = true
+                    break
+                end
+            end
+            if not in_index then
+                card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_mod
+                card.ability.extra.card_index[#card.ability.extra.card_index + 1] = context.consumeable.config.center.key
+                
+                return {
+                    message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.Xmult } }
+                }
+            end
+        end
+
+        if context.joker_main then
+            return {
+                Xmult = card.ability.extra.Xmult
+            }
+        end
+    end
+}
