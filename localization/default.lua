@@ -255,9 +255,17 @@ return {
             j_mxfj_record_shop = {
                 name = "Record Shop",
                 text = {
-                    "This Joker gains{X:mult,C:white} X#1# {} Mult for",
+                    "This Joker gains {X:mult,C:white}X#1# {} Mult for",
                     "every unique {C:attention}consumable{} used",
                     "{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)",
+                },
+            },
+            j_mxfj_strongman = {
+                name = "Strongman",
+                text = {
+                    "If played hand contains a",
+                    "{C:attention}#1#{}, increase the rank",
+                    "of the lowest-ranked {C:attention}Pair{}"
                 },
             },
         },

@@ -1525,3 +1525,76 @@ SMODS.Joker {
         end
     end
 }
+
+SMODS.Joker {
+    key = "strongman",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    pos = { x = 6, y = 3 },
+    atlas = "mxfj_sprites",
+    config = { extra = { type = 'Two Pair', lowest_cards = {} } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.type } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play then
+            if next(context.poker_hands[card.ability.extra.type]) then
+                local lowest_rank = 14
+                for k, v in ipairs(context.scoring_hand) do
+                    if v:get_id() < lowest_rank then
+                        lowest_rank = v:get_id()
+                    end
+                end
+                
+                card.ability.extra.lowest_cards = {}
+                for k, v in ipairs(context.scoring_hand) do
+                    if v:get_id() == lowest_rank then
+                        card.ability.extra.lowest_cards[#card.ability.extra.lowest_cards + 1] = v
+                    end
+                end
+            end
+        end
+        if context.final_scoring_step and context.cardarea == G.jokers and not context.blueprint then
+            for i = 1, #card.ability.extra.lowest_cards do
+            local percent = 1.15 - (i - 0.999) / (#card.ability.extra.lowest_cards - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    card.ability.extra.lowest_cards[i]:flip()
+                    play_sound('card1', percent)
+                    card.ability.extra.lowest_cards[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+            end
+            delay(0.2)
+            for i = 1, #card.ability.extra.lowest_cards do
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.1,
+                    func = function()
+                    -- SMODS.modify_rank will increment/decrement a given card's rank by a given amount
+                        assert(SMODS.modify_rank(card.ability.extra.lowest_cards[i], 1))
+                        return true
+                    end
+                }))
+            end
+            for i = 1, #card.ability.extra.lowest_cards do
+                local percent = 0.85 + (i - 0.999) / (#card.ability.extra.lowest_cards - 0.998) * 0.3
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.15,
+                    func = function()
+                        card.ability.extra.lowest_cards[i]:flip()
+                        play_sound('tarot2', percent, 0.6)
+                        card.ability.extra.lowest_cards[i]:juice_up(0.3, 0.3)
+                        return true
+                    end
+                }))
+            end
+        end
+    end
+}
