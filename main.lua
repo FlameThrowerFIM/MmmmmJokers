@@ -572,7 +572,7 @@ SMODS.Joker {
     end,
     in_pool = function()
         for _, v in pairs(G.playing_cards) do
-            if v.seal and not v.seal == "Purple" then return true end
+            if v.seal and v.seal ~= "Purple" then return true end
         end
         return false
     end,
