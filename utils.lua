@@ -33,6 +33,7 @@ function get_cultist_count()
 end
 
 -- Modifies Edition Values
+-- This doesn't work with modded editions yet. I tested this with Phanta's Waxed edition.
 local base_calculate_edition = Card.calculate_edition
 function Card.calculate_edition(self, context)
     local ret = base_calculate_edition(self, context)
