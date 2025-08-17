@@ -1584,7 +1584,7 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.final_scoring_step and context.cardarea == G.jokers and not context.blueprint and next(context.poker_hands[card.ability.extra.type]) then
-            local rank_counts = {}
+            --[[local rank_counts = {}
             for k, v in ipairs(context.scoring_hand) do
                 rank_counts[v:get_id()] = (rank_counts[v:get_id()] or 0) + 1
             end
@@ -1593,6 +1593,13 @@ SMODS.Joker {
             for k, v in pairs(rank_counts) do
                 if v == 2 and (lowest_rank == nil or k < lowest_rank) then
                     lowest_rank = k
+                end
+            end]]--
+
+            local lowest_rank = nil
+            for k, v in ipairs(context.scoring_hand) do
+                if lowest_rank == nil or v:get_id() < lowest_rank then
+                    lowest_rank = v:get_id()
                 end
             end
 

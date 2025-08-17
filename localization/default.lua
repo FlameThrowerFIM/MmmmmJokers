@@ -265,7 +265,8 @@ return {
                 text = {
                     "If played hand contains a",
                     "{C:attention}#1#{}, increase the rank",
-                    "of the lowest-ranked {C:attention}Pair{}"
+                    "of cards with the",
+                    "lowest rank by {C:attention}1{}"
                 },
             },
         },
