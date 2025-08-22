@@ -70,7 +70,7 @@ return {
             j_mxfj_cyclops = {
                 name = "Cyclops Joker",
                 text = {
-                    "If played hand is an",
+                    "If played hand is a",
                     "{C:attention}High Card{} with an {C:attention}Ace{},",
                     "destroys it and",
                     "gains {C:mult}+#1#{} Mult",
