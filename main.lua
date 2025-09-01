@@ -1084,18 +1084,18 @@ if Partner_API then
             return { vars = { _mult_mod, card.ability.extra.mult } }
         end,
         calculate = function(self, card, context)
-            if context.partner_before then
+            if context.before then
                 card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
                 return {
                     message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } },
                 }
             end
-            if context.partner_main and card.ability.extra.mult ~= 0 then
+            if context.joker_main and card.ability.extra.mult > 0 then
                 return {
                     mult = card.ability.extra.mult
                 }
             end
-            if context.partner_end_of_round then
+            if context.end_of_round and not context.individual and not context.repetition then
                 G.E_MANAGER:add_event(Event({
                     func = function()
                         card.ability.extra.mult = 0
