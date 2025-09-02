@@ -181,7 +181,8 @@ if Partner_API then
         discovered = true,
         pos = { x = 1, y = 0 },
         atlas = "mxfj_partners",
-        config = { extra = { related_card = "j_mxfj_grave_robber", dollars = 2 } },
+        config = { extra = { dollars = 2 } },
+        link_config = { j_mxfj_grave_robber = 1 },
         loc_vars = function(self, info_queue, card)
             local benefits = ((next(SMODS.find_card("j_mxfj_grave_robber")) and 2) or 0)
             local dollar_mod = card.ability.extra.dollars + benefits
@@ -593,7 +594,15 @@ SMODS.Joker {
         return { vars = { card.ability.extra } }
     end,
     -- Where's Jimbo effect in "lovely.toml"
-    atlas = "mxfj_sprites"
+    atlas = "mxfj_sprites",
+  add_to_deck = function(self, card, from_debuff)
+    G.GAME.modifiers = G.GAME.modifiers or {}
+    G.GAME.modifiers.booster_size_mod = G.GAME.modifiers.booster_size_mod or 0
+    G.GAME.modifiers.booster_size_mod = G.GAME.modifiers.booster_size_mod + card.ability.extra
+  end,
+  remove_from_deck = function(self, card, from_debuff)
+    G.GAME.modifiers.booster_size_mod = G.GAME.modifiers.booster_size_mod - card.ability.extra
+  end
 }
 
 -- Banned Card --
@@ -1077,15 +1086,16 @@ if Partner_API then
         discovered = true,
         pos = { x = 0, y = 0 },
         atlas = "mxfj_partners",
-        config = { extra = { related_card = "j_mxfj_prepper", mult = 0, mult_mod = 2 } },
+        config = { extra = { mult = 0, mult_mod = 3, mult_extra = 3 } },
+        link_config = { j_mxfj_prepper = 1 },
         loc_vars = function(self, info_queue, card)
-            local benefits = ((next(SMODS.find_card("j_mxfj_prepper")) and 1) or 0)
+            local benefits = ((next(SMODS.find_card("j_mxfj_prepper")) and card.ability.extra.mult_extra) or 0)
             local _mult_mod = card.ability.extra.mult_mod + benefits
             return { vars = { _mult_mod, card.ability.extra.mult } }
         end,
         calculate = function(self, card, context)
             if context.before then
-                card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod
+                card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod + ((next(SMODS.find_card("j_mxfj_prepper")) and card.ability.extra.mult_extra) or 0)
                 return {
                     message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } },
                 }
