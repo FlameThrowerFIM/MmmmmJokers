@@ -1,5 +1,16 @@
 return {
     descriptions = {
+        Back = {
+            b_mxfj_unicorn = {
+                name = "Unicorn Deck",
+                text = {
+                    "Jokers from {C:attention}MmmmmJokers{}",
+                    "appear {C:attention}3X{} as often",
+                    "Start run with a",
+                    "copy of {C:attention}Where's Jimbo{}"
+                }
+            }
+        },
         Joker = {
             j_mxfj_medusa = {
                 name = "Medusa",
@@ -246,8 +257,8 @@ return {
             j_mxfj_match_box = {
                 name = "Match Box",
                 text = {
-                    "When you {C:attention}set the score on fire{},",
-                    "give {C:money}$#1#{} dollars",
+                    "When you {C:attention}set the score",
+                    "{C:attention}on fire{}, give {C:money}$#1#{}",
                     "Loses {C:money}$#2#{} every time you",
                     "{C:attention}set the score on fire"
                 },
@@ -267,6 +278,13 @@ return {
                     "{C:attention}#1#{}, increase the rank",
                     "of cards with the",
                     "lowest rank by {C:attention}1{}"
+                },
+            },
+            j_mxfj_timbo_jruise = {
+                name = "Timbo Jruise",
+                text = {
+                    "All cards with {C:attention}seals{}",
+                    "give {C:money}$#1#{} when scored"
                 },
             },
         },

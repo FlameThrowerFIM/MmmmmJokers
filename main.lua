@@ -44,6 +44,20 @@ SMODS.Atlas {
     py = 95
 }
 
+SMODS.Atlas {
+    key = "mxfj_match_box",
+    path = "mxfj_match_box.png",
+    px = 71,
+    py = 95
+}
+
+SMODS.Atlas {
+    key = "mxfj_decks",
+    path = "mxfj_decks.png",
+    px = 71,
+    py = 95
+}
+
 if Partner_API then
     SMODS.Atlas {
         key = "mxfj_partners",
@@ -1481,8 +1495,8 @@ SMODS.Joker {
         }
     },
     rarity = 1,
-    pos = { x = 0, y = 4 },
-    atlas = "mxfj_sprites",
+    pos = { x = 0, y = 0 },
+    atlas = "mxfj_match_box",
     cost = 5,
     blueprint_compat = false,
     eternal_compat = false,
@@ -1500,7 +1514,7 @@ SMODS.Joker {
                 G.E_MANAGER:add_event(Event({
                     func = function()
                         if not (card.ability.mxfj_matchbox_trigger > 4) then
-                            card.children.center:set_sprite_pos { x = card.ability.mxfj_matchbox_trigger, y = 4 }
+                            card.children.center:set_sprite_pos { x = card.ability.mxfj_matchbox_trigger, y = 0 }
                         end
                         return true
                     end
@@ -1667,4 +1681,45 @@ SMODS.Joker {
             end
         end
     end
+}
+
+SMODS.Joker {
+    key = "timbo_jruise",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 1,
+    cost = 4,
+    pos = { x = 9, y = 3 },
+    atlas = "mxfj_sprites",
+    config = { extra = 3 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and context.other_card.seal then
+            return { dollars = card.ability.extra }
+        end
+    end
+}
+
+
+
+
+
+
+
+
+
+SMODS.Back {
+  key = 'unicorn',
+  atlas = 'mxfj_decks',
+  pos = { x = 0, y = 0 },
+  config = {
+    jokers = {
+      'j_mxfj_wheres_jimbo'
+    }
+  },
+  loc_vars = function(self, info_queue, card)
+    return { vars = { localize { type = 'name_text', set = 'Joker', key = 'j_mxfj_wheres_jimbo' } } }
+  end
 }
