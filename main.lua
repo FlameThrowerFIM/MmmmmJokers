@@ -593,17 +593,23 @@ SMODS.Joker {
         info_queue[#info_queue + 1] = { key = "undefined_buffoon_pack", set = "Other" }
         return { vars = { card.ability.extra } }
     end,
-    -- Where's Jimbo effect in "lovely.toml"
-    atlas = "mxfj_sprites",
-  add_to_deck = function(self, card, from_debuff)
-    G.GAME.modifiers = G.GAME.modifiers or {}
-    G.GAME.modifiers.booster_size_mod = G.GAME.modifiers.booster_size_mod or 0
-    G.GAME.modifiers.booster_size_mod = G.GAME.modifiers.booster_size_mod + card.ability.extra
-  end,
-  remove_from_deck = function(self, card, from_debuff)
-    G.GAME.modifiers.booster_size_mod = G.GAME.modifiers.booster_size_mod - card.ability.extra
-  end
+    atlas = "mxfj_sprites"
 }
+
+function mxfj_wheres_jimbo_total()
+    local total = 0
+    for _, v in ipairs(SMODS.find_card("j_mxfj_wheres_jimbo")) do
+        total = total + (v and v.ability and v.ability.extra)
+    end
+    return total
+end
+
+SMODS.Booster:take_ownership_by_kind('Buffoon', {
+    update = function(self, card, dt)
+        card.ability.extra_backup = card.ability.extra_backup or card.ability.extra
+        card.ability.extra = card.ability.extra_backup + mxfj_wheres_jimbo_total()
+    end
+}, true)
 
 -- Banned Card --
 
@@ -1095,7 +1101,8 @@ if Partner_API then
         end,
         calculate = function(self, card, context)
             if context.before then
-                card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod + ((next(SMODS.find_card("j_mxfj_prepper")) and card.ability.extra.mult_extra) or 0)
+                card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_mod +
+                    ((next(SMODS.find_card("j_mxfj_prepper")) and card.ability.extra.mult_extra) or 0)
                 return {
                     message = localize { type = 'variable', key = 'a_mult', vars = { card.ability.extra.mult } },
                 }
@@ -1604,7 +1611,7 @@ SMODS.Joker {
                 if v == 2 and (lowest_rank == nil or k < lowest_rank) then
                     lowest_rank = k
                 end
-            end]]--
+            end]] --
 
             local lowest_rank = nil
             for k, v in ipairs(context.scoring_hand) do
