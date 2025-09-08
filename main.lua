@@ -1702,6 +1702,81 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "key_card",
+    blueprint_compat = false,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 5,
+    pos = { x = 7, y = 3 },
+    atlas = "mxfj_sprites",
+    calculate = function(self, card, context)
+        if context.setting_blind then
+            local me = nil
+            for i = 1, #G.jokers.cards do
+                if G.jokers.cards[i] == card then me = i end
+            end
+            for i = 1, #G.jokers.cards do
+                if i < me then
+                    G.jokers.cards[i]:set_eternal(false)
+                    G.jokers.cards[i]:juice_up()
+                end
+                if i > me and G.jokers.cards[i].config.center.eternal_compat then
+                    G.jokers.cards[i]:set_eternal(true)
+                    G.jokers.cards[i]:juice_up()
+                end
+            end
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "flesh_golem",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 5,
+    pos = { x = 8, y = 3 },
+    atlas = "mxfj_sprites",
+    config = { extra = 4 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play then
+            local suits = 0
+            for k, v in pairs(SMODS.Suits) do
+                if (not v.in_pool or v:in_pool({})) and context.other_card:is_suit(k) then
+                    suits = suits + 1
+                end
+            end
+            if suits > 0 then return { mult = card.ability.extra * suits } end
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "pinup_joker",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 3,
+    cost = 8,
+    pos = { x = 0, y = 4 },
+    atlas = "mxfj_sprites",
+    config = { extra = { Xmult = 1.5, retriggers = 1 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.retriggers, card.ability.extra.Xmult } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and context.other_card:get_id() == 11 then
+            return { xmult = card.ability.extra.Xmult }
+        end
+        if context.repetition and context.cardarea == G.play and context.other_card:get_id() == 11 then
+            return { repetitions = card.ability.extra.retriggers }
+        end
+    end
+}
+
 
 
 
@@ -1711,15 +1786,15 @@ SMODS.Joker {
 
 
 SMODS.Back {
-  key = 'unicorn',
-  atlas = 'mxfj_decks',
-  pos = { x = 0, y = 0 },
-  config = {
-    jokers = {
-      'j_mxfj_wheres_jimbo'
-    }
-  },
-  loc_vars = function(self, info_queue, card)
-    return { vars = { localize { type = 'name_text', set = 'Joker', key = 'j_mxfj_wheres_jimbo' } } }
-  end
+    key = 'unicorn',
+    atlas = 'mxfj_decks',
+    pos = { x = 0, y = 0 },
+    config = {
+        jokers = {
+            'j_mxfj_wheres_jimbo'
+        }
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { localize { type = 'name_text', set = 'Joker', key = 'j_mxfj_wheres_jimbo' } } }
+    end
 }

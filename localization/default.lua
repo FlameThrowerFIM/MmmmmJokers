@@ -287,6 +287,33 @@ return {
                     "give {C:money}$#1#{} when scored"
                 },
             },
+            j_mxfj_key_card = {
+                name = "Key Card",
+                text = {
+                    "When {C:attention}Blind{} is selected,",
+                    "Jokers to the {C:attention}right{} of this",
+                    "one become {C:eternal}Eternal{}, Jokers",
+                    "to the {C:attention}left{} lose {C:eternal}Eternal{}"
+                },
+            },
+            j_mxfj_flesh_golem = {
+                name = "Flesh Golem",
+                text = {
+                    "Played cards give",
+                    "{C:mult}+#1#{} Mult for each",
+                    "{C:attention}suit{} they count",
+                    "as when scored"
+                },
+            },
+            j_mxfj_pinup_joker = {
+                name = "Pinup Joker",
+                text = {
+                    "Played {C:attention}Jacks{} are",
+                    "retriggered {C:attention}#1#{} time",
+                    "and give {C:white,X:mult}X#2#{} Mult",
+                    "when scored"
+                },
+            }
         },
         Partner = {
             pnr_mxfj_prepper = {
