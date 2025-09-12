@@ -308,7 +308,7 @@ return {
             j_mxfj_pinup_joker = {
                 name = "Pinup Joker",
                 text = {
-                    "Played {C:attention}Jacks{} are",
+                    "Played {C:attention}Wild Jacks{} are",
                     "retriggered {C:attention}#1#{} time",
                     "and give {C:white,X:mult}X#2#{} Mult",
                     "when scored"

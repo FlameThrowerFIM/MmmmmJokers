@@ -702,33 +702,28 @@ SMODS.Joker {
             local light = 0
             local dark = 0
             for i = 1, #context.cards do
-                if SMODS.has_no_suit(context.cards[i]) then
-                elseif SMODS.has_any_suit(context.cards[i]) then
-                    light = light + 1
-                    dark = dark + 1
-                else
+                if not SMODS.has_no_suit(context.cards[i]) then
                     local card_is_light = false
                     for j = 1, #mxfj_mod.light_suits do
                         if context.cards[i]:is_suit(mxfj_mod.light_suits[j]) then
                             light = light + 1
                             card_is_light = true
+                            break
                         end
                     end
                     if not card_is_light then
                         for j = 1, #mxfj_mod.dark_suits do
                             if context.cards[i]:is_suit(mxfj_mod.dark_suits[j]) then
                                 dark = dark + 1
+                                break
                             end
                         end
                     end
                 end
             end
-            if light or dark > 0 then
-                if dark > 0 then
-                    card.ability.extra.chips = card.ability.extra.chips + (card.ability.extra.chips_mod * dark)
-                else
-                    card.ability.extra.mult = card.ability.extra.mult + (card.ability.extra.mult_mod * light)
-                end
+            if light > 0 or dark > 0 then
+                card.ability.extra.chips = card.ability.extra.chips + (card.ability.extra.chips_mod * dark)
+                card.ability.extra.mult = card.ability.extra.mult + (card.ability.extra.mult_mod * light)
                 return {
                     message = localize('k_upgrade_ex'),
                     colour = (dark > 0 and light <= 0 and G.C.BLUE) or (light > 0 and dark <= 0 and G.C.RED) or
@@ -737,18 +732,16 @@ SMODS.Joker {
             end
         end
         if context.joker_main then
-            if card.ability.extra.chips ~= 0 and card.ability.extra.mult ~= 0 then
+            if card.ability.extra.chips > 0 and card.ability.extra.mult > 0 then
                 return {
                     chips = card.ability.extra.chips,
-                    extra = {
-                        mult = card.ability.extra.mult
-                    }
+                    mult = card.ability.extra.mult
                 }
-            elseif card.ability.extra.chips ~= 0 then
+            elseif card.ability.extra.chips > 0 then
                 return {
                     chips = card.ability.extra.chips,
                 }
-            elseif card.ability.extra.mult ~= 0 then
+            elseif card.ability.extra.mult > 0 then
                 return {
                     mult = card.ability.extra.mult,
                 }
@@ -1765,13 +1758,14 @@ SMODS.Joker {
     atlas = "mxfj_sprites",
     config = { extra = { Xmult = 1.5, retriggers = 1 } },
     loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_wild
         return { vars = { card.ability.extra.retriggers, card.ability.extra.Xmult } }
     end,
     calculate = function(self, card, context)
-        if context.individual and context.cardarea == G.play and context.other_card:get_id() == 11 then
+        if context.individual and context.cardarea == G.play and context.other_card:get_id() == 11 and SMODS.has_enhancement(context.other_card, "m_wild") then
             return { xmult = card.ability.extra.Xmult }
         end
-        if context.repetition and context.cardarea == G.play and context.other_card:get_id() == 11 then
+        if context.repetition and context.cardarea == G.play and context.other_card:get_id() == 11 and SMODS.has_enhancement(context.other_card, "m_wild") then
             return { repetitions = card.ability.extra.retriggers }
         end
     end
@@ -1798,3 +1792,64 @@ SMODS.Back {
         return { vars = { localize { type = 'name_text', set = 'Joker', key = 'j_mxfj_wheres_jimbo' } } }
     end
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Friends of Jimbo
+
+local suits = { 'hearts', 'clubs', 'diamonds', 'spades' }
+local ranks = { 'Jack', 'Queen', "King" }
+
+local descriptions = { 'Monster Prom', 'Dead Ahead: Zombie Warfare', 'Castle Crashers', 'TheKiltedDungeoneer' }
+
+SMODS.Atlas {
+    key = 'mxfj_foj_lc',
+    px = 71,
+    py = 95,
+    path = 'mxfj_foj_lc.png',
+    prefix_config = { key = false }
+}
+
+SMODS.Atlas {
+    key = 'mxfj_foj_hc',
+    px = 71,
+    py = 95,
+    path = 'mxfj_foj_hc.png',
+    prefix_config = { key = false }
+}
+
+for i, suit in ipairs(suits) do
+    SMODS.DeckSkin {
+        key = suit .. "_skin",
+        suit = suit:gsub("^%l", string.upper),
+        ranks = ranks,
+        lc_atlas = 'mxfj_foj_lc',
+        hc_atlas = 'mxfj_foj_hc',
+        loc_txt = { ['en-us'] = descriptions[i] },
+        posStyle = 'deck'
+    }
+end
