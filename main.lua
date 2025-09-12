@@ -1824,7 +1824,7 @@ SMODS.Back {
 local suits = { 'hearts', 'clubs', 'diamonds', 'spades' }
 local ranks = { 'Jack', 'Queen', "King" }
 
-local descriptions = { 'Monster Prom', 'Dead Ahead: Zombie Warfare', 'Castle Crashers', 'TheKiltedDungeoneer' }
+local descriptions = { 'Monster Prom', 'Dead Ahead', 'Castle Crashers', 'TheKiltedDungeoneer' }
 
 SMODS.Atlas {
     key = 'mxfj_foj_lc',
