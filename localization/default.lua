@@ -313,6 +313,24 @@ return {
                     "and give {C:white,X:mult}X#2#{} Mult",
                     "when scored"
                 },
+            },
+            j_mxfj_cheerleader = {
+                name = "Cheerleader",
+                text = {
+                    "{C:mult}+#1#{} Mult for each card",
+                    "in your {C:attention}full deck{} of",
+                    "the most {C:attention}popular{} suit",
+                    "{C:inactive}(Currently {C:attention}#2#{C:inactive}, {C:mult}+#3#{C:inactive} Mult){}",
+                },
+            },
+            j_mxfj_cyberpunk_joker = {
+                name = "Cyberpunk Joker",
+                text = {
+                    "{C:attention}Steel{} cards give",
+                    "{C:money}$#1#{} if they are",
+                    "held in hand at",
+                    "end of round",
+                },
             }
         },
         Partner = {

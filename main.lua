@@ -1771,6 +1771,107 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "cheerleader",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 6,
+    pos = { x = 1, y = 4 },
+    atlas = "mxfj_sprites",
+    config = { extra = { mult = 1 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
+        local most_popular = mxfj_cheerleader_most_popular()
+        return { vars = { card.ability.extra.mult, most_popular and localize(most_popular.key, "suits_plural") or localize("k_none"), most_popular and most_popular.count or 0 } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local most_popular = mxfj_cheerleader_most_popular()
+            if most_popular and most_popular.count > 0 then return { mult = most_popular.count * card.ability.extra.mult } end
+        end
+    end,
+    update = function(self, card, dt)
+        if card and card.ability and card.ability.extra then
+            local most_popular = mxfj_cheerleader_most_popular()
+            most_popular = most_popular and most_popular.key or "none"
+            if not card.ability.extra.state then
+                card.ability.extra.state = most_popular
+                card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular) or { x = 1, y = 4 })
+                return
+            end
+            if most_popular ~= card.ability.extra.state then
+                card.ability.extra.state = most_popular
+                
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() card:flip();play_sound('card1', 1);card:juice_up(0.3, 0.3);return true end }))
+                delay(0.2)
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function() card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular ~= "none" and most_popular) or { x = 1, y = 4 });return true end }))
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() card:flip();play_sound('tarot2', 1, 0.6);return true end }))
+            end
+        end
+    end
+}
+
+mxfj_cheerleader_most_popular = function()
+    local suit_tallies = {}
+    if G.playing_cards then
+        for _, v in ipairs(G.playing_cards) do
+            for k, vv in pairs(SMODS.Suits) do
+                if (not vv.in_pool or vv:in_pool({})) and v:is_suit(k) then
+                    if not suit_tallies[k] then suit_tallies[k] = 0 end
+                    suit_tallies[k] = suit_tallies[k] + 1
+                end
+            end
+        end
+    end
+
+    local is_tie = false
+    local largest_suit_tally = nil
+    for k, v in pairs(suit_tallies) do
+        if largest_suit_tally == nil or v > largest_suit_tally.count then
+            is_tie = false
+            largest_suit_tally = { key = k, count = v }
+        elseif v == largest_suit_tally.count then
+            is_tie = true
+        end
+    end
+
+    if is_tie then return nil end
+    return largest_suit_tally
+end
+
+mxfj_cheerleader_find_pos = function(most_popular)
+    if not most_popular then most_popular = mxfj_cheerleader_most_popular() end
+    if not most_popular then return nil end
+    local conversions = {
+        ["Diamonds"] = { x = 2, y = 4 },
+        ["Hearts"] = { x = 3, y = 4 },
+        ["Spades"] = { x = 4, y = 4 },
+        ["Clubs"] = { x = 5, y = 4 },
+    }
+    return conversions[most_popular]
+end
+
+SMODS.Joker {
+    key = "cyberpunk_joker",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 6,
+    pos = { x = 6, y = 4 },
+    atlas = "mxfj_sprites",
+    config = { extra = { money = 2 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
+        return { vars = { card.ability.extra.money } }
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and context.individual and SMODS.has_enhancement(context.other_card, "m_steel") then
+            return { dollars = card.ability.extra.money }
+        end
+    end
+}
+
 
 
 
