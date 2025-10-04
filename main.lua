@@ -45,8 +45,8 @@ SMODS.Atlas {
 }
 
 SMODS.Atlas {
-    key = "mxfj_match_box",
-    path = "mxfj_match_box.png",
+    key = "mxfj_multi_sprites",
+    path = "mxfj_multi_sprites.png",
     px = 71,
     py = 95
 }
@@ -1489,7 +1489,7 @@ SMODS.Joker {
     },
     rarity = 1,
     pos = { x = 0, y = 0 },
-    atlas = "mxfj_match_box",
+    atlas = "mxfj_multi_sprites",
     cost = 5,
     blueprint_compat = false,
     eternal_compat = false,
@@ -1775,13 +1775,12 @@ SMODS.Joker {
     key = "cheerleader",
     blueprint_compat = true,
     perishable_compat = true,
-    rarity = 2,
-    cost = 6,
-    pos = { x = 1, y = 4 },
-    atlas = "mxfj_sprites",
+    rarity = 1,
+    cost = 5,
+    pos = { x = 0, y = 1 },
+    atlas = "mxfj_multi_sprites",
     config = { extra = { mult = 1 } },
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
         local most_popular = mxfj_cheerleader_most_popular()
         return { vars = { card.ability.extra.mult, most_popular and localize(most_popular.key, "suits_plural") or localize("k_none"), most_popular and most_popular.count or 0 } }
     end,
@@ -1797,7 +1796,7 @@ SMODS.Joker {
             most_popular = most_popular and most_popular.key or "none"
             if not card.ability.extra.state then
                 card.ability.extra.state = most_popular
-                card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular) or { x = 1, y = 4 })
+                card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular) or { x = 0, y = 1 })
                 return
             end
             if most_popular ~= card.ability.extra.state then
@@ -1805,7 +1804,7 @@ SMODS.Joker {
                 
                 G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() card:flip();play_sound('card1', 1);card:juice_up(0.3, 0.3);return true end }))
                 delay(0.2)
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function() card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular ~= "none" and most_popular) or { x = 1, y = 4 });return true end }))
+                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function() card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular ~= "none" and most_popular) or { x = 0, y = 1 });return true end }))
                 G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() card:flip();play_sound('tarot2', 1, 0.6);return true end }))
             end
         end
@@ -1844,10 +1843,14 @@ mxfj_cheerleader_find_pos = function(most_popular)
     if not most_popular then most_popular = mxfj_cheerleader_most_popular() end
     if not most_popular then return nil end
     local conversions = {
-        ["Diamonds"] = { x = 2, y = 4 },
-        ["Hearts"] = { x = 3, y = 4 },
-        ["Spades"] = { x = 4, y = 4 },
-        ["Clubs"] = { x = 5, y = 4 },
+        ["Diamonds"] = { x = 1, y = 1 },
+        ["Hearts"] = { x = 2, y = 1 },
+        ["Spades"] = { x = 3, y = 1 },
+        ["Clubs"] = { x = 4, y = 1 },
+        ["bunc_Fleurons"] = { x = 0, y = 2 },
+        ["bunc_Halberds"] = { x = 1, y = 2 },
+        ["paperback_Crowns"] = { x = 2, y = 2 },
+        ["paperback_Stars"] = { x = 3, y = 2 },
     }
     return conversions[most_popular]
 end
