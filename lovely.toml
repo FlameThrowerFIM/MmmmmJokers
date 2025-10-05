@@ -113,3 +113,25 @@ payload = '''
       end
     end
 '''
+
+
+
+# This Isn't Balatro Jazz
+
+[[patches]]
+[patches.pattern]
+target = "card.lua"
+pattern = '''
+G.E_MANAGER:add_event(Event({
+    trigger = 'before',
+    delay = 0.0,
+    func = (function()
+        local card = create_card('Tarot',G.consumeables, nil, nil, nil, nil, nil, '8ba')'''
+position = "at"
+match_indent = true
+payload = '''
+G.E_MANAGER:add_event(Event({
+    trigger = 'before',
+    delay = 0.0,
+    func = (function()
+        local card = create_card('Tarot',G.consumeables, nil, nil, nil, nil, next(SMODS.find_card('j_mxfj_this_isnt_balatro_jazz')) and 'c_fool', '8ba')'''

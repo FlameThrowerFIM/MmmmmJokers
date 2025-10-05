@@ -1791,6 +1791,9 @@ SMODS.Joker {
         end
     end,
     update = function(self, card, dt)
+        if not self.discovered and not card.params.bypass_discovery_center then
+            return
+        end
         if card and card.ability and card.ability.extra then
             local most_popular = mxfj_cheerleader_most_popular()
             most_popular = most_popular and most_popular.key or "none"
@@ -1801,11 +1804,18 @@ SMODS.Joker {
             end
             if most_popular ~= card.ability.extra.state then
                 card.ability.extra.state = most_popular
-                
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() card:flip();play_sound('card1', 1);card:juice_up(0.3, 0.3);return true end }))
+
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.15, func = function()
+                    card:flip(); play_sound('card1', 1); card:juice_up(0.3, 0.3); return true
+                end }))
                 delay(0.2)
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.1,func = function() card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular ~= "none" and most_popular) or { x = 0, y = 1 });return true end }))
-                G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() card:flip();play_sound('tarot2', 1, 0.6);return true end }))
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.1, func = function()
+                    card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular ~= "none" and most_popular) or
+                    { x = 0, y = 1 }); return true
+                end }))
+                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.15, func = function()
+                    card:flip(); play_sound('tarot2', 1, 0.6); return true
+                end }))
             end
         end
     end
@@ -1861,7 +1871,7 @@ SMODS.Joker {
     perishable_compat = true,
     rarity = 2,
     cost = 6,
-    pos = { x = 6, y = 4 },
+    pos = { x = 1, y = 4 },
     atlas = "mxfj_sprites",
     config = { extra = { money = 2 } },
     loc_vars = function(self, info_queue, card)
@@ -1872,6 +1882,21 @@ SMODS.Joker {
         if context.end_of_round and context.individual and SMODS.has_enhancement(context.other_card, "m_steel") then
             return { dollars = card.ability.extra.money }
         end
+    end
+}
+
+SMODS.Joker {
+    key = "this_isnt_balatro_jazz",
+    blueprint_compat = false,
+    perishable_compat = true,
+    rarity = 3,
+    cost = 8,
+    pos = { x = 3, y = 4 },
+    atlas = "mxfj_sprites",
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_SEALS.Purple
+        info_queue[#info_queue + 1] = G.P_CENTERS.c_fool
+        return {}
     end
 }
 

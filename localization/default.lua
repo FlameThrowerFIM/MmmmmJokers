@@ -242,7 +242,7 @@ return {
                 name = "Jokers96",
                 text = {
                     "Played cards with",
-                    "{C:attention}red seals{} become",
+                    "{C:attention}Red Seals{} become",
                     "{C:dark_edition}Polychrome{} when scored"
                 },
             },
@@ -330,6 +330,13 @@ return {
                     "{C:money}$#1#{} if they are",
                     "held in hand at",
                     "end of round",
+                },
+            },
+            j_mxfj_this_isnt_balatro_jazz = {
+                name = "This Isn't Balatro Jazz",
+                text = {
+                    "{C:attention}Purple Seals{} always",
+                    "create {C:tarot}The Fool{}"
                 },
             }
         },
