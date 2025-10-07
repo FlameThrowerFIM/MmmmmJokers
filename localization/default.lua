@@ -338,6 +338,14 @@ return {
                     "{C:attention}Purple Seals{} always",
                     "create {C:tarot}The Fool{}"
                 },
+            },
+            j_mxfj_detour = {
+                name = "Detour",
+                text = {
+                    "Allows {C:attention}Straights{}",
+                    "to wrap around",
+                    "{C:inactive}(ex: {C:attention}Q K A 2 3{C:inactive}){}",
+                },
             }
         },
         Partner = {

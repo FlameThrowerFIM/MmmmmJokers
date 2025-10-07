@@ -1900,6 +1900,21 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "detour",
+    blueprint_compat = false,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    pos = { x = 5, y = 4 },
+    soul_pos = { x = 6, y = 4 },
+    atlas = "mxfj_sprites"
+}
+
+SMODS.PokerHandPart:take_ownership('_straight', {
+	func = function(hand) return get_straight(hand, next(SMODS.find_card('j_four_fingers')) and 4 or 5, not not next(SMODS.find_card('j_shortcut')), next(SMODS.find_card('j_csau_gnorts')) or next(SMODS.find_card('j_mxfj_detour'))) end
+})
+
 
 
 

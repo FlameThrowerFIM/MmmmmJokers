@@ -135,3 +135,22 @@ G.E_MANAGER:add_event(Event({
     delay = 0.0,
     func = (function()
         local card = create_card('Tarot',G.consumeables, nil, nil, nil, nil, next(SMODS.find_card('j_mxfj_this_isnt_balatro_jazz')) and 'c_fool', '8ba')'''
+
+[[patches]]
+[patches.pattern]
+target = "functions/misc_functions.lua"
+pattern = '''local can_skip = next(find_joker('Shortcut'))'''
+position = "after"
+match_indent = true
+payload = '''local mxfj_can_wrap = next(SMODS.find_card('j_mxfj_detour'))'''
+
+[[patches]]
+[patches.pattern]
+target = "functions/misc_functions.lua"
+pattern = '''for j = 1, 14 do
+      if IDS[j == 1 and 14 or j] then'''
+position = "at"
+match_indent = true
+payload = '''for j = 1, mxfj_can_wrap and 18 or 14 do
+      if IDS[j == 1 and 14 or mxfj_can_wrap and (j > 14 and j - 13) or j] then'''
+
