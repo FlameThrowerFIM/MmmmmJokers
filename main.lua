@@ -594,6 +594,45 @@ SMODS.Joker {
     atlas = "mxfj_sprites"
 }
 
+if Partner_API then
+    -- Statue --
+
+    Partner_API.Partner {
+        key = "waxwork",
+        name = "Waxwork Partner",
+        unlocked = false,
+        discovered = true,
+        pos = { x = 2, y = 0 },
+        atlas = "mxfj_partners",
+        config = { extra = { repetitions = 1, added_repetitions = 1 } },
+        link_config = { j_mxfj_waxwork = 1 },
+        loc_vars = function(self, info_queue, card)
+            local benefits = ((next(SMODS.find_card("j_mxfj_waxwork")) and card.ability.extra.added_repetitions) or 0)
+            local repetitions = card.ability.extra.repetitions + benefits
+            return { vars = { repetitions, repetitions == 1 and "" or "s" } }
+        end,
+        calculate = function(self, card, context)
+            if context.cardarea == G.play and context.other_card == context.scoring_hand[#context.scoring_hand] and context.repetition then
+                if context.other_card.seal then
+                    return {
+                        repetitions = card.ability.extra.repetitions + (next(SMODS.find_card("j_mxfj_waxwork")) and card.ability.extra.added_repetitions or 0)
+                    }
+                end
+            end
+        end,
+        check_for_unlock = function(self, args)
+            for _, v in pairs(G.P_CENTER_POOLS["Joker"]) do
+                if v.key == "j_mxfj_waxwork" then
+                    if get_joker_win_sticker(v, true) >= 8 then
+                        return true
+                    end
+                    break
+                end
+            end
+        end,
+    }
+end
+
 -- Where's Jimbo --
 
 SMODS.Joker {
@@ -1805,17 +1844,30 @@ SMODS.Joker {
             if most_popular ~= card.ability.extra.state then
                 card.ability.extra.state = most_popular
 
-                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.15, func = function()
-                    card:flip(); play_sound('card1', 1); card:juice_up(0.3, 0.3); return true
-                end }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.15,
+                    func = function()
+                        card:flip(); play_sound('card1', 1); card:juice_up(0.3, 0.3); return true
+                    end
+                }))
                 delay(0.2)
-                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.1, func = function()
-                    card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular ~= "none" and most_popular) or
-                    { x = 0, y = 1 }); return true
-                end }))
-                G.E_MANAGER:add_event(Event({ trigger = 'after', delay = 0.15, func = function()
-                    card:flip(); play_sound('tarot2', 1, 0.6); return true
-                end }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.1,
+                    func = function()
+                        card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular ~= "none" and
+                            most_popular) or
+                            { x = 0, y = 1 }); return true
+                    end
+                }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.15,
+                    func = function()
+                        card:flip(); play_sound('tarot2', 1, 0.6); return true
+                    end
+                }))
             end
         end
     end
@@ -1912,7 +1964,9 @@ SMODS.Joker {
 }
 
 SMODS.PokerHandPart:take_ownership('_straight', {
-	func = function(hand) return get_straight(hand, next(SMODS.find_card('j_four_fingers')) and 4 or 5, not not next(SMODS.find_card('j_shortcut')), next(SMODS.find_card('j_csau_gnorts')) or next(SMODS.find_card('j_mxfj_detour'))) end
+    func = function(hand) return get_straight(hand, next(SMODS.find_card('j_four_fingers')) and 4 or 5,
+            not not next(SMODS.find_card('j_shortcut')),
+            next(SMODS.find_card('j_csau_gnorts')) or next(SMODS.find_card('j_mxfj_detour'))) end
 })
 
 

@@ -374,6 +374,19 @@ return {
                     "{C:attention}Stake{} difficulty",
                 },
             },
+            pnr_mxfj_waxwork = {
+                name = "Statue",
+                text = {
+                    "Retrigger the last",
+                    "played card with a",
+                    "seal {C:attention}#1#{} additional time#2#"
+                },
+                unlock={
+                    "Used{C:attention} Waxwork Joker{}",
+                    "to win on {C:attention}Gold",
+                    "{C:attention}Stake{} difficulty",
+                },
+            }
         },
         Other = {
             undefined_buffoon_pack = {
