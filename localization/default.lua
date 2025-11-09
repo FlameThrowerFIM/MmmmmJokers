@@ -346,6 +346,50 @@ return {
                     "to wrap around",
                     "{C:inactive}(ex: {C:attention}Q K A 2 3{C:inactive}){}",
                 },
+            },
+            j_mxfj_reststop = {
+                name = "Rest Stop",
+                text = {
+                    "Gains {C:white,X:mult}X#1#{} Mult when",
+                    "leaving the {C:attention}shop",
+                    "without spending {C:money}money{}",
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
+                },
+            },
+            j_mxfj_lotteryticket = {
+                name = "Lottery Ticket",
+                text = {
+                    "If played hand contains",
+                    "{C:attention}3 Lucky 7s{}, triples",
+                    "all {C:attention}listed{} {C:green,E:1}probabilities{}",
+                    "{C:inactive}(ex: {C:green}1 in 4{C:inactive} -> {C:green}3 in 4{C:inactive}){}"
+                },
+            },
+            j_mxfj_tipthescales = {
+                name = "Tip the Scales",
+                text = {
+                    "Balances {C:chips}Chips{} and",
+                    "{C:mult}Mult{} by {C:attention}#1#%{} if",
+                    "{C:chips}Chips{} exceed {C:mult}Mult{}"
+                },
+            },
+            j_mxfj_billiardball = {
+                name = "Billiard Ball",
+                text = {
+                    "Gains {C:chips}+#1#{} Chips for",
+                    "each played and scored",
+                    "card without {C:attention}rank{} or {C:attention}suit{}",
+                    "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips){}",
+                },
+            },
+            j_mxfj_prospector = {
+                name = "Prospector",
+                text = {
+                    "Played {C:attention}Stone{} cards",
+                    "give {C:money}$#1#{} and have a",
+                    "{C:green}#2# in #3#{} chance to be",
+                    "{C:red}destroyed{} when scored"
+                },
             }
         },
         Partner = {

@@ -1857,7 +1857,7 @@ SMODS.Joker {
                     delay = 0.1,
                     func = function()
                         card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular ~= "none" and
-                            most_popular) or
+                                most_popular) or
                             { x = 0, y = 1 }); return true
                     end
                 }))
@@ -1958,16 +1958,184 @@ SMODS.Joker {
     perishable_compat = true,
     rarity = 2,
     cost = 7,
-    pos = { x = 5, y = 4 },
-    soul_pos = { x = 6, y = 4 },
+    pos = { x = 4, y = 4 },
+    soul_pos = { x = 5, y = 4 },
     atlas = "mxfj_sprites"
 }
 
 SMODS.PokerHandPart:take_ownership('_straight', {
-    func = function(hand) return get_straight(hand, next(SMODS.find_card('j_four_fingers')) and 4 or 5,
+    func = function(hand)
+        return get_straight(hand, next(SMODS.find_card('j_four_fingers')) and 4 or 5,
             not not next(SMODS.find_card('j_shortcut')),
-            next(SMODS.find_card('j_csau_gnorts')) or next(SMODS.find_card('j_mxfj_detour'))) end
+            next(SMODS.find_card('j_csau_gnorts')) or next(SMODS.find_card('j_mxfj_detour')))
+    end
 })
+
+SMODS.Joker {
+    key = "reststop",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    pos = { x = 6, y = 4 },
+    atlas = "mxfj_sprites",
+    config = { extra = { added_xmult = 0.5, current_xmult = 1 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.added_xmult, card.ability.extra.current_xmult } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and card.ability.extra.current_xmult > 1 then return { xmult = card.ability.extra.current_xmult } end
+
+        if context.ending_shop and G.GAME.mxfj_no_money_spent and not context.blueprint then
+            card.ability.extra.current_xmult = card.ability.extra.current_xmult + card.ability.extra.added_xmult
+            return { message = localize("k_upgrade_ex"), colour = G.C.FILTER }
+        end
+    end
+}
+
+local cash_out_ref = G.FUNCS.cash_out
+G.FUNCS.cash_out = function(e)
+    cash_out_ref(e)
+    G.GAME.mxfj_no_money_spent = true
+end
+
+local ease_dollars_ref = ease_dollars
+function ease_dollars(mod, instant)
+    ease_dollars_ref(mod, instant)
+    if mod < 0 then G.GAME.mxfj_no_money_spent = false end
+end
+
+SMODS.Joker {
+    key = "tipthescales",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 3,
+    cost = 8,
+    pos = { x = 7, y = 4 },
+    atlas = "mxfj_sprites",
+    config = { extra = { percentage = 50 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.percentage } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and hand_chips > mult then
+            local chip_mod = (card.ability.extra.percentage / 100) * hand_chips
+            local mult_mod = (card.ability.extra.percentage / 100) * mult
+            local avg = (chip_mod + mult_mod) / 2
+            hand_chips = hand_chips + (avg - chip_mod)
+            mult = mult + (avg - mult_mod)
+            update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
+            G.E_MANAGER:add_event(Event({
+                func = (function()
+                    play_sound('gong', 0.94, 0.3)
+                    play_sound('gong', 0.94 * 1.5, 0.2)
+                    play_sound('tarot1', 1.5)
+                    ease_colour(G.C.UI_CHIPS, { 0.8, 0.45, 0.85, 1 })
+                    ease_colour(G.C.UI_MULT, { 0.8, 0.45, 0.85, 1 })
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        blockable = false,
+                        blocking = false,
+                        delay = 0.8,
+                        func = (function()
+                            ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.8)
+                            ease_colour(G.C.UI_MULT, G.C.RED, 0.8)
+                            return true
+                        end)
+                    }))
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        blockable = false,
+                        blocking = false,
+                        no_delete = true,
+                        delay = 1.3,
+                        func = (function()
+                            G.C.UI_CHIPS[1], G.C.UI_CHIPS[2], G.C.UI_CHIPS[3], G.C.UI_CHIPS[4] = G.C.BLUE[1], G.C.BLUE[2], G.C.BLUE[3], G.C.BLUE[4]
+                            G.C.UI_MULT[1], G.C.UI_MULT[2], G.C.UI_MULT[3], G.C.UI_MULT[4] = G.C.RED[1], G.C.RED[2], G.C.RED[3], G.C.RED[4]
+                            return true
+                        end)
+                    }))
+                    delay(0.6)
+                    return true
+                end)
+            }))
+            return { message = localize('k_balanced'), colour = { 0.8, 0.45, 0.85, 1 } }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "lotteryticket",
+    blueprint_compat = false,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 5,
+    pos = { x = 8, y = 4 },
+    atlas = "mxfj_sprites",
+    config = { extra = { modifying_probability = false } },
+    calculate = function(self, card, context)
+        if context.before then
+            local sevens = 0
+            for _, v in ipairs(context.scoring_hand) do
+                if v:get_id() == 7 and SMODS.has_enhancement(v, "m_lucky") then sevens = sevens + 1 end
+            end
+            card.ability.extra.modifying_probability = sevens >= 3
+        end
+        if context.after then card.ability.extra.modifying_probability = false end
+
+        if context.mod_probability and card.ability.extra.modifying_probability then return { numerator = 3 } end
+    end,
+    enhancement_gate = "m_lucky"
+}
+
+SMODS.Joker {
+    key = "billiardball",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 5,
+    pos = { x = 9, y = 4 },
+    atlas = "mxfj_sprites",
+    config = { extra = { added_chips = 10, current_chips = 0 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.added_chips, card.ability.extra.current_chips } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and card.ability.extra.current_chips > 0 then return { chips = card.ability.extra.current_chips } end
+
+        if context.cardarea == G.play and context.individual and not context.blueprint and (SMODS.has_no_rank(context.other_card) or SMODS.has_no_suit(context.other_card)) then
+            card.ability.extra.current_chips = card.ability.extra.current_chips + card.ability.extra.added_chips
+            return { message = localize("k_upgrade_ex"), colour = G.C.FILTER }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "prospector",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 6,
+    pos = { x = 0, y = 5 },
+    atlas = "mxfj_sprites",
+    config = { extra = { money = 8, odds = 2 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
+        local num, denom = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "prospector")
+        return { vars = { card.ability.extra.money, num, denom } }
+    end,
+    calculate = function(self, card, context)
+        if context.cardarea == G.play and context.individual and SMODS.has_enhancement(context.other_card, "m_stone") then
+            return { dollars = card.ability.extra.money }
+        end
+
+        if context.destroy_card and context.cardarea == G.play and SMODS.has_enhancement(context.destroy_card, "m_stone")
+            and SMODS.pseudorandom_probability(card, "prospector", 1, card.ability.extra.odds) then
+            return { remove = true }
+        end
+    end,
+    enhancement_gate = "m_stone"
+}
 
 
 
