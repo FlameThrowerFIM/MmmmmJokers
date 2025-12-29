@@ -2005,6 +2005,79 @@ function ease_dollars(mod, instant)
     if mod < 0 then G.GAME.mxfj_no_money_spent = false end
 end
 
+-- This code was taken from All in Jest. Thanks! ^u^
+table.insert(SMODS.calculation_keys, "mxfj_balance_percent")
+if SMODS.other_calculation_keys then
+    table.insert(SMODS.other_calculation_keys, "mxfj_balance_percent")
+end
+
+local mxfj_balance_mixed = false
+
+local mxfj_original_smods_calculate_individual_effect = SMODS.calculate_individual_effect
+SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, from_edition)
+    if key == "mxfj_balance_percent" then
+        if amount > 1 then
+            amount = 1
+        end
+        if effect.card and effect.card ~= scored_card then juice_card(effect.card) end
+        new_hand_chips, new_mult = calculate_balance_percent_values(hand_chips, mult, amount)
+
+        SMODS.Scoring_Parameters.chips:modify(new_hand_chips - hand_chips)
+        SMODS.Scoring_Parameters.mult:modify(new_mult - mult)
+
+        local text = (amount * 100) .. "%"
+
+        G.E_MANAGER:add_event(Event({
+            trigger = 'immediate',
+            func = (function()
+                ease_colour(G.C.UI_CHIPS, mix_colours({ 0.8, 0.45, 0.85, 1 }, G.C.UI_CHIPS, amount))
+                ease_colour(G.C.UI_MULT, mix_colours({ 0.8, 0.45, 0.85, 1 }, G.C.UI_MULT, amount))
+                if not mxfj_balance_mixed then
+                    mxfj_balance_mixed = true
+                    G.E_MANAGER:add_event(Event({
+                        trigger = 'after',
+                        blockable = false,
+                        blocking = false,
+                        delay = 6.3,
+                        func = (function()
+                            if G.STATE ~= 2 then
+                                ease_colour(G.C.UI_CHIPS, G.C.BLUE, 2)
+                                ease_colour(G.C.UI_MULT, G.C.RED, 2)
+                                mxfj_balance_mixed = false
+                                return true
+                            end
+                        end)
+                    }))
+                end
+                return true
+            end)
+        }))
+
+        if not effect.remove_default_message then
+            if from_edition then
+                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true})
+            else
+                card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true})
+            end
+        end
+
+        return true
+    end
+
+    return mxfj_original_smods_calculate_individual_effect(effect, scored_card, key, amount, from_edition)
+end
+
+calculate_balance_percent_values = calculate_balance_percent_values or function(input_hand_chips, input_mult, percent)
+  local chip_mod = percent * input_hand_chips
+  local mult_mod = percent * input_mult
+  local avg = (chip_mod + mult_mod)/2
+  local new_hand_chips = input_hand_chips + (avg - chip_mod)
+  local new_mult = input_mult + (avg - mult_mod)
+
+  return new_hand_chips, new_mult
+end
+
+
 SMODS.Joker {
     key = "tipthescales",
     blueprint_compat = true,
@@ -2019,47 +2092,7 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.joker_main and hand_chips > mult then
-            local chip_mod = (card.ability.extra.percentage / 100) * hand_chips
-            local mult_mod = (card.ability.extra.percentage / 100) * mult
-            local avg = (chip_mod + mult_mod) / 2
-            hand_chips = hand_chips + (avg - chip_mod)
-            mult = mult + (avg - mult_mod)
-            update_hand_text({ delay = 0 }, { chips = hand_chips, mult = mult })
-            G.E_MANAGER:add_event(Event({
-                func = (function()
-                    play_sound('gong', 0.94, 0.3)
-                    play_sound('gong', 0.94 * 1.5, 0.2)
-                    play_sound('tarot1', 1.5)
-                    ease_colour(G.C.UI_CHIPS, { 0.8, 0.45, 0.85, 1 })
-                    ease_colour(G.C.UI_MULT, { 0.8, 0.45, 0.85, 1 })
-                    G.E_MANAGER:add_event(Event({
-                        trigger = 'after',
-                        blockable = false,
-                        blocking = false,
-                        delay = 0.8,
-                        func = (function()
-                            ease_colour(G.C.UI_CHIPS, G.C.BLUE, 0.8)
-                            ease_colour(G.C.UI_MULT, G.C.RED, 0.8)
-                            return true
-                        end)
-                    }))
-                    G.E_MANAGER:add_event(Event({
-                        trigger = 'after',
-                        blockable = false,
-                        blocking = false,
-                        no_delete = true,
-                        delay = 1.3,
-                        func = (function()
-                            G.C.UI_CHIPS[1], G.C.UI_CHIPS[2], G.C.UI_CHIPS[3], G.C.UI_CHIPS[4] = G.C.BLUE[1], G.C.BLUE[2], G.C.BLUE[3], G.C.BLUE[4]
-                            G.C.UI_MULT[1], G.C.UI_MULT[2], G.C.UI_MULT[3], G.C.UI_MULT[4] = G.C.RED[1], G.C.RED[2], G.C.RED[3], G.C.RED[4]
-                            return true
-                        end)
-                    }))
-                    delay(0.6)
-                    return true
-                end)
-            }))
-            return { message = localize('k_balanced'), colour = { 0.8, 0.45, 0.85, 1 } }
+            return { mxfj_balance_percent = card.ability.extra.percentage / 100 }
         end
     end
 }
@@ -2190,7 +2223,8 @@ SMODS.Back {
 local suits = { 'hearts', 'clubs', 'diamonds', 'spades' }
 local ranks = { 'Jack', 'Queen', "King" }
 
-local descriptions = { 'Monster Prom', 'Dead Ahead', 'Castle Crashers', 'TheKiltedDungeoneer' }
+local descriptions1 = { 'Monster Prom', 'Dead Ahead', 'Castle Crashers', 'TheKiltedDungeoneer' }
+local descriptions2 = { 'TABS', 'Neatoqueen', "Nubby's Number Factory", 'Look Outside' }
 
 SMODS.Atlas {
     key = 'mxfj_foj_lc',
@@ -2208,6 +2242,22 @@ SMODS.Atlas {
     prefix_config = { key = false }
 }
 
+SMODS.Atlas {
+    key = 'mxfj_foj2_lc',
+    px = 71,
+    py = 95,
+    path = 'mxfj_foj2_lc.png',
+    prefix_config = { key = false }
+}
+
+SMODS.Atlas {
+    key = 'mxfj_foj2_hc',
+    px = 71,
+    py = 95,
+    path = 'mxfj_foj2_hc.png',
+    prefix_config = { key = false }
+}
+
 for i, suit in ipairs(suits) do
     SMODS.DeckSkin {
         key = suit .. "_skin",
@@ -2215,7 +2265,19 @@ for i, suit in ipairs(suits) do
         ranks = ranks,
         lc_atlas = 'mxfj_foj_lc',
         hc_atlas = 'mxfj_foj_hc',
-        loc_txt = { ['en-us'] = descriptions[i] },
+        loc_txt = { ['en-us'] = descriptions1[i] },
+        posStyle = 'deck'
+    }
+end
+
+for i, suit in ipairs(suits) do
+    SMODS.DeckSkin {
+        key = suit .. "_skin2",
+        suit = suit:gsub("^%l", string.upper),
+        ranks = ranks,
+        lc_atlas = 'mxfj_foj2_lc',
+        hc_atlas = 'mxfj_foj2_hc',
+        loc_txt = { ['en-us'] = descriptions2[i] },
         posStyle = 'deck'
     }
 end
