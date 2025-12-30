@@ -9,6 +9,22 @@ return {
                     "Start run with a",
                     "copy of {C:attention}Where's Jimbo{}"
                 }
+            },
+            b_mxfj_domino = {
+                name = "Domino Deck",
+                text = {
+                    "Doubles all {C:attention}listed",
+                    "{C:green,E:1,S:1.1}probabilities",
+                    "{C:inactive}(ex: {C:green}1 in 3{C:inactive} -> {C:green}2 in 3{C:inactive})",
+                    "{C:attention}-#1#{} hand size"
+                }
+            },
+            b_mxfj_wee = {
+                name = "Wee Deck",
+                text = {
+                    "Start with only",
+                    "{C:attention}2s{}-{C:attention}6s{} in deck"
+                }
             }
         },
         Joker = {

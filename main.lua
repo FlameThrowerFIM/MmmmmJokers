@@ -2055,9 +2055,9 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
 
         if not effect.remove_default_message then
             if from_edition then
-                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, {message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true})
+                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, { message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true })
             else
-                card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, {message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true})
+                card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, { message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true })
             end
         end
 
@@ -2068,13 +2068,13 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
 end
 
 calculate_balance_percent_values = calculate_balance_percent_values or function(input_hand_chips, input_mult, percent)
-  local chip_mod = percent * input_hand_chips
-  local mult_mod = percent * input_mult
-  local avg = (chip_mod + mult_mod)/2
-  local new_hand_chips = input_hand_chips + (avg - chip_mod)
-  local new_mult = input_mult + (avg - mult_mod)
+    local chip_mod = percent * input_hand_chips
+    local mult_mod = percent * input_mult
+    local avg = (chip_mod + mult_mod) / 2
+    local new_hand_chips = input_hand_chips + (avg - chip_mod)
+    local new_mult = input_mult + (avg - mult_mod)
 
-  return new_hand_chips, new_mult
+    return new_hand_chips, new_mult
 end
 
 
@@ -2187,16 +2187,46 @@ SMODS.Back {
             'j_mxfj_wheres_jimbo'
         }
     },
-    loc_vars = function(self, info_queue, card)
+    loc_vars = function(self, info_queue, center)
         return { vars = { localize { type = 'name_text', set = 'Joker', key = 'j_mxfj_wheres_jimbo' } } }
     end
 }
 
+SMODS.Back {
+    key = 'domino',
+    atlas = 'mxfj_decks',
+    pos = { x = 2, y = 0 },
+    config = { minus_hand_size = 1 },
+    loc_vars = function(self, info_queue, center)
+        return { vars = { self.config.minus_hand_size } }
+    end,
+    apply = function(self)
+        G.GAME.starting_params.hand_size = G.GAME.starting_params.hand_size - self.config.minus_hand_size
+        for k, v in pairs(G.GAME.probabilities) do
+            G.GAME.probabilities[k] = v * 2
+        end
+    end,
+}
 
-
-
-
-
+SMODS.Back {
+    key = 'wee',
+    atlas = 'mxfj_decks',
+    pos = { x = 3, y = 0 },
+    apply = function(self)
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                local marked_for_removal = {}
+                for _, v in ipairs(G.playing_cards) do
+                    if v:get_id() > 6 or v:get_id() < 2 then
+                        marked_for_removal[#marked_for_removal + 1] = v
+                    end
+                end
+                SMODS.destroy_cards(marked_for_removal, true, true, true)
+                return true
+            end
+        }))
+    end,
+}
 
 
 
