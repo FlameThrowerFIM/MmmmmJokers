@@ -418,7 +418,7 @@ return {
                 name = "Ghost Hunter",
                 text = {
                     "{C:white,X:mult}X#1#{} Mult per {C:attention}skipped{}",
-                    "{C:spectral}Spectral Pack{}",
+                    "{C:spectral}Spectral Pack{} this run",
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
