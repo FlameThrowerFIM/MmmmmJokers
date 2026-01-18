@@ -96,6 +96,17 @@ if not SMODS.ObjectTypes.Food then
     }
 end
 
+
+
+
+
+
+function SMODS.current_mod:calculate(context)
+    if context.skipping_booster and context.booster and context.booster.kind == "Spectral" and not context.blueprint then
+        G.GAME.mxfj_spectral_packs_skipped = (G.GAME.mxfj_spectral_packs_skipped or 0) + 1
+    end
+end
+
 -- Medusa --
 
 SMODS.Joker {
@@ -2168,6 +2179,164 @@ SMODS.Joker {
         end
     end,
     enhancement_gate = "m_stone"
+}
+
+SMODS.Joker {
+    key = "animatronicjoker",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    pos = { x = 1, y = 5 },
+    atlas = "mxfj_sprites",
+    config = { extra = { xmult = 1.87 } },
+
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_steel
+        return { vars = { card.ability.extra.xmult } }
+    end,
+
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play and SMODS.has_enhancement(context.other_card, "m_steel") then
+            return { xmult = card.ability.extra.xmult }
+        end
+    end,
+    enhancement_gate = "m_steel"
+}
+
+SMODS.Joker {
+    key = "ghosthunter",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 1,
+    cost = 6,
+    pos = { x = 2, y = 5 },
+    atlas = "mxfj_sprites",
+    config = { extra = { added_xmult = 1 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.added_xmult, 1 + (card.ability.extra.added_xmult * (G.GAME and G.GAME.mxfj_spectral_packs_skipped or 0)) } }
+    end,
+    calculate = function(self, card, context)
+        if context.skipping_booster and context.booster and context.booster.kind == "Spectral" and not context.blueprint then
+            return { message = localize("k_upgrade_ex") }
+        end
+
+        if context.joker_main and G.GAME.mxfj_spectral_packs_skipped and G.GAME.mxfj_spectral_packs_skipped > 0 then
+            return { xmult = 1 + (card.ability.extra.added_xmult * G.GAME.mxfj_spectral_packs_skipped) }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "ectocola",
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = true,
+    rarity = 3,
+    cost = 9,
+    pos = { x = 3, y = 5 },
+    atlas = "mxfj_sprites",
+    config = { extra = { current_rounds = 0, rounds_required = 2 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+        return { vars = { card.ability.extra.rounds_required, card.ability.extra.current_rounds } }
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and not context.individual and not context.repetition and not context.blueprint then
+            card.ability.extra.current_rounds = card.ability.extra.current_rounds + 1
+            if card.ability.extra.current_rounds == card.ability.extra.rounds_required then
+                local eval = function(card) return not card.REMOVED end
+                juice_card_until(card, eval, true)
+            end
+            return {
+                message = (card.ability.extra.current_rounds < card.ability.extra.rounds_required) and
+                    (card.ability.extra.current_rounds .. '/' .. card.ability.extra.rounds_required) or localize('k_active_ex'),
+                colour = G.C.FILTER
+            }
+        end
+
+        if context.selling_self and card.ability.extra.current_rounds >= card.ability.extra.rounds_required and not context.blueprint then
+            card.ability.extra.current_rounds = 0
+
+            local candidates = {}
+            for _, v in ipairs(G.jokers.cards) do
+                if not v.edition and v ~= card then candidates[#candidates + 1] = v end
+            end
+
+            if #candidates > 0 then
+                local chosen_card = pseudorandom_element(candidates, pseudoseed('ectocola'))
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        chosen_card:set_edition { negative = true }
+                        play_sound('tarot1')
+                        card:juice_up()
+                        delay(0.5)
+                        return true
+                    end
+                }))
+            end
+        end
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+        card.ability.extra.current_rounds = 0
+    end,
+    pools = { ["Food"] = true }
+}
+
+SMODS.Joker {
+    key = "jawbreaker",
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    rarity = 1,
+    cost = 5,
+    pos = { x = 4, y = 5 },
+    atlas = "mxfj_sprites",
+    config = { extra = { mult = 8, odds = 20 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
+        local num, denom = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "jawbreaker")
+        return { vars = { card.ability.extra.mult, num, denom } }
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and not context.individual and not context.repetition and not context.blueprint then
+            if SMODS.pseudorandom_probability(card, "jawbreaker", 1, card.ability.extra.odds) then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        play_sound('tarot1')
+                        card.T.r = -0.2
+                        card:juice_up(0.3, 0.4)
+                        card.states.drag.is = true
+                        card.children.center.pinch.x = true
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.3,
+                            blockable = false,
+                            func = function()
+                                G.jokers:remove_card(card)
+                                card:remove()
+                                card = nil
+                                return true
+                            end
+                        }))
+                        return true
+                    end
+                }))
+                return { message = localize('k_eaten_ex') }
+            else
+                return { message = localize('k_safe_ex') }
+            end
+        end
+
+        if context.individual and context.cardarea == G.play and SMODS.has_enhancement(context.other_card, "m_stone") then
+            return { mult = card.ability.extra.mult }
+        end
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+        card.ability.extra.current_rounds = 0
+    end,
+    enhancement_gate = "m_stone",
+    pools = { ["Food"] = true }
 }
 
 

@@ -233,7 +233,7 @@ return {
                     "Each {C:attention}enhanced card{}",
                     "held in hand",
                     "gives {C:mult}+#1#{} Mult",
-                },
+                }
             },
             j_mxfj_delivery = {
                 name = "Delivery Guy",
@@ -242,7 +242,7 @@ return {
                     "{C:attention}Boss Blind{}, create a",
                     "random {C:attention}Food Joker{}",
                     "{C:inactive}(Must have room)"
-                },
+                }
             },
             j_mxfj_guitar_pick = {
                 name = "Guitar Pick",
@@ -252,7 +252,7 @@ return {
                     "retrigger all played cards",
                     "{s:0.8}poker hand changes",
                     "{s:0.8}at end of round",
-                },
+                }
             },
             j_mxfj_jokers96 = {
                 name = "Jokers96",
@@ -260,7 +260,7 @@ return {
                     "Played cards with",
                     "{C:attention}Red Seals{} become",
                     "{C:dark_edition}Polychrome{} when scored"
-                },
+                }
             },
             j_mxfj_mariachi = {
                 name = "Mariachi",
@@ -268,7 +268,7 @@ return {
                     "{C:chips}+#1#{} Chips for each",
                     "retriggered {C:attention}scoring card{}",
                     "per hand"
-                },
+                }
             },
             j_mxfj_match_box = {
                 name = "Match Box",
@@ -277,7 +277,7 @@ return {
                     "{C:attention}on fire{}, give {C:money}$#1#{}",
                     "Loses {C:money}$#2#{} every time you",
                     "{C:attention}set the score on fire"
-                },
+                }
             },
             j_mxfj_record_shop = {
                 name = "Record Shop",
@@ -285,7 +285,7 @@ return {
                     "This Joker gains {X:mult,C:white}X#1# {} Mult for",
                     "every unique {C:attention}consumable{} used",
                     "{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)",
-                },
+                }
             },
             j_mxfj_strongman = {
                 name = "Strongman",
@@ -294,14 +294,14 @@ return {
                     "{C:attention}#1#{}, increase the rank",
                     "of cards with the",
                     "lowest rank by {C:attention}1{}"
-                },
+                }
             },
             j_mxfj_timbo_jruise = {
                 name = "Timbo Jruise",
                 text = {
                     "All cards with {C:attention}seals{}",
                     "give {C:money}$#1#{} when scored"
-                },
+                }
             },
             j_mxfj_key_card = {
                 name = "Key Card",
@@ -310,7 +310,7 @@ return {
                     "Jokers to the {C:attention}right{} of this",
                     "one become {C:eternal}Eternal{}, Jokers",
                     "to the {C:attention}left{} lose {C:eternal}Eternal{}"
-                },
+                }
             },
             j_mxfj_flesh_golem = {
                 name = "Flesh Golem",
@@ -319,7 +319,7 @@ return {
                     "{C:mult}+#1#{} Mult for each",
                     "{C:attention}suit{} they count",
                     "as when scored"
-                },
+                }
             },
             j_mxfj_pinup_joker = {
                 name = "Pinup Joker",
@@ -328,7 +328,7 @@ return {
                     "retriggered {C:attention}#1#{} time",
                     "and give {C:white,X:mult}X#2#{} Mult",
                     "when scored"
-                },
+                }
             },
             j_mxfj_cheerleader = {
                 name = "Cheerleader",
@@ -337,7 +337,7 @@ return {
                     "in your {C:attention}full deck{} of",
                     "the most {C:attention}popular{} suit",
                     "{C:inactive}(Currently {C:attention}#2#{C:inactive}, {C:mult}+#3#{C:inactive} Mult){}",
-                },
+                }
             },
             j_mxfj_cyberpunk_joker = {
                 name = "Cyberpunk Joker",
@@ -346,14 +346,14 @@ return {
                     "{C:money}$#1#{} if they are",
                     "held in hand at",
                     "end of round",
-                },
+                }
             },
             j_mxfj_this_isnt_balatro_jazz = {
                 name = "This Isn't Balatro Jazz",
                 text = {
                     "{C:attention}Purple Seals{} always",
                     "create {C:tarot}The Fool{}"
-                },
+                }
             },
             j_mxfj_detour = {
                 name = "Detour",
@@ -361,7 +361,7 @@ return {
                     "Allows {C:attention}Straights{}",
                     "to wrap around",
                     "{C:inactive}(ex: {C:attention}Q K A 2 3{C:inactive}){}",
-                },
+                }
             },
             j_mxfj_reststop = {
                 name = "Rest Stop",
@@ -370,7 +370,7 @@ return {
                     "leaving the {C:attention}shop",
                     "without spending {C:money}money{}",
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
-                },
+                }
             },
             j_mxfj_lotteryticket = {
                 name = "Lottery Ticket",
@@ -379,7 +379,7 @@ return {
                     "{C:attention}3 Lucky 7s{}, triples",
                     "all {C:attention}listed{} {C:green,E:1}probabilities{}",
                     "{C:inactive}(ex: {C:green}1 in 4{C:inactive} -> {C:green}3 in 4{C:inactive}){}"
-                },
+                }
             },
             j_mxfj_tipthescales = {
                 name = "Tip the Scales",
@@ -387,7 +387,7 @@ return {
                     "Balances {C:chips}Chips{} and",
                     "{C:mult}Mult{} by {C:attention}#1#%{} if",
                     "{C:chips}Chips{} exceed {C:mult}Mult{}"
-                },
+                }
             },
             j_mxfj_billiardball = {
                 name = "Billiard Ball",
@@ -396,7 +396,7 @@ return {
                     "each played and scored",
                     "card without {C:attention}rank{} or {C:attention}suit{}",
                     "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips){}",
-                },
+                }
             },
             j_mxfj_prospector = {
                 name = "Prospector",
@@ -405,7 +405,42 @@ return {
                     "give {C:money}$#1#{} and have a",
                     "{C:green}#2# in #3#{} chance to be",
                     "{C:red}destroyed{} when scored"
-                },
+                }
+            },
+            j_mxfj_animatronicjoker = {
+                name = "Animatronic Joker",
+                text = {
+                    "Played {C:attention}Steel{} cards give",
+                    "{C:white,X:mult}X#1#{} Mult when scored"
+                }
+            },
+            j_mxfj_ghosthunter = {
+                name = "Ghost Hunter",
+                text = {
+                    "{C:white,X:mult}X#1#{} Mult per {C:attention}skipped{}",
+                    "{C:spectral}Spectral Pack{}",
+                    "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
+                }
+            },
+            j_mxfj_ectocola = {
+                name = "Ecto Cola",
+                text={
+                    "After {C:attention}#1#{} rounds,",
+                    "sell this card to",
+                    "add {C:dark_edition}Negative{} to",
+                    "a random Joker",
+                    "{C:inactive}(Currently {C:attention}#2#{C:inactive}/#1#)"
+                }
+            },
+            j_mxfj_jawbreaker = {
+                name = "Jawbreaker",
+                text={
+                    "Played {C:attention}Stone{} cards give",
+                    "{C:mult}+#1#{} Mult when scored",
+                    "{C:green}#2# in #3#{} chance this",
+                    "card is destroyed",
+                    "at end of round",
+                }
             }
         },
         Partner = {
@@ -420,7 +455,7 @@ return {
                     "Used{C:attention} Prepper{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",
-                },
+                }
             },
             pnr_mxfj_grave_robber = {
                 name = "Dig",
@@ -432,7 +467,7 @@ return {
                     "Used{C:attention} Grave Robber{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",
-                },
+                }
             },
             pnr_mxfj_waxwork = {
                 name = "Statue",
@@ -445,7 +480,7 @@ return {
                     "Used{C:attention} Waxwork Joker{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",
-                },
+                }
             }
         },
         Other = {
