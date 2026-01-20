@@ -27,6 +27,15 @@ return {
                 }
             }
         },
+        Enhanced = {
+            m_mxfj_wood = {
+                name = "Wood Card",
+                text = {
+                    "{C:white,X:chips}X#1#{} Chips",
+                    "no rank or suit"
+                }
+            }
+        },
         Joker = {
             j_mxfj_medusa = {
                 name = "Medusa",
@@ -78,10 +87,10 @@ return {
             j_mxfj_patchwork = {
                 name = "Patchwork Joker",
                 text = {
-                "{C:attention}Patch{} played cards and",
-                "gains half of the rank",
-                "as {C:chips}Chips{} if not {C:attention}patched{}",
-                "{C:inactive}(Currently {C:chips}+#1# {C:inactive}Chips)"
+                    "{C:attention}Patch{} played cards and",
+                    "gains half of the rank",
+                    "as {C:chips}Chips{} if not {C:attention}patched{}",
+                    "{C:inactive}(Currently {C:chips}+#1# {C:inactive}Chips)"
                 }
             },
             j_mxfj_cryptozoologist = {
@@ -422,9 +431,26 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
+            j_mxfj_woodenjoker = {
+                name = "Wooden Joker",
+                text = {
+                    "Gives {C:white,X:chips}X#1#{} Chips",
+                    "for each {C:attention}Wood{} card",
+                    "in your {C:attention}full deck{}",
+                    "{C:inactive}(Currently {C:white,X:chips}X#2#{C:inactive} Chips){}",
+                }
+            },
+            j_mxfj_builder = {
+                name = "Builder",
+                text = {
+                    "Retriggers all",
+                    "{C:attention}Stone{} cards and",
+                    "{C:attention}Wood{} cards",
+                }
+            },
             j_mxfj_ectocola = {
                 name = "Ecto Cola",
-                text={
+                text = {
                     "After {C:attention}#1#{} rounds,",
                     "sell this card to",
                     "add {C:dark_edition}Negative{} to",
@@ -434,7 +460,7 @@ return {
             },
             j_mxfj_jawbreaker = {
                 name = "Jawbreaker",
-                text={
+                text = {
                     "Played {C:attention}Stone{} cards give",
                     "{C:mult}+#1#{} Mult when scored",
                     "{C:green}#2# in #3#{} chance this",
@@ -451,7 +477,7 @@ return {
                     "played this round",
                     "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
                 },
-                unlock={
+                unlock = {
                     "Used{C:attention} Prepper{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",
@@ -463,7 +489,7 @@ return {
                     "Earn {C:money}$#1#{} when a",
                     "card is destroyed",
                 },
-                unlock={
+                unlock = {
                     "Used{C:attention} Grave Robber{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",
@@ -476,7 +502,7 @@ return {
                     "played card with a",
                     "seal {C:attention}#1#{} additional time#2#"
                 },
-                unlock={
+                unlock = {
                     "Used{C:attention} Waxwork Joker{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",

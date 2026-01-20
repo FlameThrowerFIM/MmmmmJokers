@@ -57,6 +57,12 @@ SMODS.Atlas {
     px = 71,
     py = 95
 }
+SMODS.Atlas {
+    key = "mxfj_enhancements",
+    path = "mxfj_enhancements.png",
+    px = 71,
+    py = 95
+}
 
 if Partner_API then
     SMODS.Atlas {
@@ -2228,6 +2234,68 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
+    key = "woodenjoker",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    pos = { x = 5, y = 5 },
+    atlas = "mxfj_sprites",
+    config = { extra = { xchips = 0.2 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_mxfj_wood
+
+        local wood_tally = 0
+        if G.playing_cards then
+            for _, playing_card in ipairs(G.playing_cards) do
+                if SMODS.has_enhancement(playing_card, 'm_mxfj_wood') then wood_tally = wood_tally + 1 end
+            end
+        end
+        return { vars = { card.ability.extra.xchips, 1 + card.ability.extra.xchips * wood_tally } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local wood_tally = 0
+            for _, playing_card in ipairs(G.playing_cards) do
+                if SMODS.has_enhancement(playing_card, 'm_mxfj_wood') then wood_tally = wood_tally + 1 end
+            end
+            return { xchips = 1 + card.ability.extra.xchips * wood_tally }
+        end
+    end,
+    enhancement_gate = "m_mxfj_wood"
+}
+
+SMODS.Joker {
+    key = "builder",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 6,
+    pos = { x = 6, y = 5 },
+    atlas = "mxfj_sprites",
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_mxfj_wood
+        return {}
+    end,
+    calculate = function(self, card, context)
+        if context.repetition and context.cardarea == G.play and (SMODS.has_enhancement(context.other_card, "m_stone") or SMODS.has_enhancement(context.other_card, "m_mxfj_wood")) then
+            return { repetitions = 1 }
+        end
+    end,
+    in_pool = function(self, args)
+        for _, v in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(v, 'm_stone') or SMODS.has_enhancement(v, 'm_mxfj_wood') then
+                return true
+            end
+        end
+        return false
+    end
+}
+
+
+
+SMODS.Joker {
     key = "ectocola",
     blueprint_compat = false,
     eternal_compat = false,
@@ -2405,6 +2473,22 @@ SMODS.Back {
 
 
 
+
+
+-- Wood
+SMODS.Enhancement {
+    key = 'wood',
+    atlas = 'mxfj_enhancements',
+    pos = { x = 0, y = 0 },
+    config = { x_chips = 1.5 },
+    replace_base_card = true,
+    no_rank = true,
+    no_suit = true,
+    always_scores = true,
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.x_chips } }
+    end
+}
 
 
 
