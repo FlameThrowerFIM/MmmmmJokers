@@ -2319,7 +2319,7 @@ SMODS.Joker {
             if counted_created > 0 then
                 return { message = "+" .. counted_created .. " Sasquatch", colour = G.C.SECONDARY_SET.Spectral }
             else
-                return { message = (card.ability.extra.target_destroyed - card.ability.extra.counted_destroyed) .. card.ability.extra.target_destroyed }
+                return { message = (card.ability.extra.target_destroyed - card.ability.extra.counted_destroyed) .. "/" .. card.ability.extra.target_destroyed }
             end
         end
     end
