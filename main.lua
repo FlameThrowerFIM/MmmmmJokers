@@ -1,6 +1,9 @@
 mxfj_mod = SMODS.current_mod
 mxfj_config = mxfj_mod.config
 
+to_big = to_big or function(x) return x end
+to_number = to_number or function(x) return x end
+
 SMODS.Atlas {
     key = "modicon",
     path = "mxfj_modicon.png",
@@ -2031,7 +2034,7 @@ end
 local ease_dollars_ref = ease_dollars
 function ease_dollars(mod, instant)
     ease_dollars_ref(mod, instant)
-    if mod < 0 then G.GAME.mxfj_no_money_spent = false end
+    if to_number(mod) < 0 then G.GAME.mxfj_no_money_spent = false end
 end
 
 -- This code was taken from All in Jest. Thanks! ^u^
