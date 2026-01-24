@@ -57,9 +57,17 @@ SMODS.Atlas {
     px = 71,
     py = 95
 }
+
 SMODS.Atlas {
     key = "mxfj_enhancements",
     path = "mxfj_enhancements.png",
+    px = 71,
+    py = 95
+}
+
+SMODS.Atlas {
+    key = "mxfj_consumables",
+    path = "mxfj_consumables.png",
     px = 71,
     py = 95
 }
@@ -103,9 +111,13 @@ if not SMODS.ObjectTypes.Food then
 end
 
 
-
-
-
+function count_consumables()
+    if G.consumeables.get_total_count then
+        return G.consumeables:get_total_count()
+    else
+        return #G.consumeables.cards + G.GAME.consumeable_buffer
+    end
+end
 
 function SMODS.current_mod:calculate(context)
     if context.skipping_booster and context.booster and context.booster.kind == "Spectral" and not context.blueprint then
@@ -2234,7 +2246,7 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
-    key = "woodenjoker",
+    key = "woodjoker",
     blueprint_compat = true,
     perishable_compat = true,
     rarity = 2,
@@ -2264,6 +2276,103 @@ SMODS.Joker {
     end,
     enhancement_gate = "m_mxfj_wood"
 }
+
+SMODS.Joker {
+    key = "lumberjack",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 6,
+    pos = { x = 8, y = 5 },
+    atlas = "mxfj_sprites",
+    config = { extra = { counted_destroyed = 0, target_destroyed = 5 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.c_mxfj_sasquatch
+        return { vars = { card.ability.extra.target_destroyed, card.ability.extra.target_destroyed - card.ability.extra.counted_destroyed } }
+    end,
+    calculate = function(self, card, context)
+        if context.remove_playing_cards then
+            card.ability.extra.counted_destroyed = card.ability.extra.counted_destroyed + #context.removed
+            local counted_created = 0
+            while card.ability.extra.counted_destroyed >= card.ability.extra.target_destroyed do
+                card.ability.extra.counted_destroyed = card.ability.extra.counted_destroyed - card.ability.extra.target_destroyed
+
+                if count_consumables() < G.consumeables.config.card_limit then
+                    G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                    counted_created = counted_created + 1
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            local new_card = create_card("Spectral", G.consumables, nil, nil, nil, nil, "c_mxfj_sasquatch", "lumberjack")
+                            new_card:add_to_deck()
+                            G.consumeables:emplace(new_card)
+                            G.GAME.consumeable_buffer = 0
+                            new_card:juice_up(0.3, 0.5)
+                            return true
+                        end
+                    }))
+                end
+            end
+
+            if counted_created > 0 then
+                return { message = "+" .. counted_created .. " Sasquatch", colour = G.C.SECONDARY_SET.Spectral }
+            else
+                return { message = (card.ability.extra.target_destroyed - card.ability.extra.counted_destroyed) .. card.ability.extra.target_destroyed }
+            end
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "sculptor",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 6,
+    pos = { x = 7, y = 5 },
+    atlas = "mxfj_sprites",
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_stone
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_mxfj_wood
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_wild
+        return {}
+    end,
+    in_pool = function(self, args)
+        for _, v in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(v, 'm_stone') or SMODS.has_enhancement(v, 'm_mxfj_wood') then
+                return true
+            end
+        end
+        return false
+    end
+}
+
+-- Thanks to Visibility for this excellent code!
+local has = SMODS.has_any_suit
+function SMODS.has_any_suit(card)
+    local ret = has(card)
+    if not next(SMODS.find_card("j_mxfj_sculptor")) then return ret end
+    for k, v in pairs(SMODS.get_enhancements(card)) do
+        if k == 'm_stone' or k == 'm_mxfj_wood' then return true end
+    end
+    return ret
+end
+
+local hns = SMODS.has_no_suit
+function SMODS.has_no_suit(card)
+    local ret = hns(card)
+    if not next(SMODS.find_card("j_mxfj_sculptor")) then return ret end
+    for k, v in pairs(SMODS.get_enhancements(card)) do
+        if k == 'm_stone' or k == 'm_mxfj_wood' then return false end
+    end
+    return ret
+end
+
+local is_suit_ref = Card.is_suit
+function Card:is_suit(suit, bypass_debuff, flush_calc)
+    if not next(SMODS.find_card("j_mxfj_sculptor")) or not (SMODS.has_enhancement(self, "m_stone") or SMODS.has_enhancement(self, "m_mxfj_wood")) then return is_suit_ref(self, suit, bypass_debuff, flush_calc) end
+
+    return not flush_calc or not self.debuff
+end
 
 SMODS.Joker {
     key = "builder",
@@ -2487,6 +2596,24 @@ SMODS.Enhancement {
     always_scores = true,
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.x_chips } }
+    end
+}
+
+-- Sasquatch
+SMODS.Spectral {
+    key = "sasquatch",
+    pos = { x = 0, y = 0 },
+    config = {
+        mod_conv = "m_mxfj_wood",
+        max_highlighted = 2
+    },
+    atlas = "mxfj_consumables",
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_mxfj_wood
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    in_pool = function()
+        return false
     end
 }
 

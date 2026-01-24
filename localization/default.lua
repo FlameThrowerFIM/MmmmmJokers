@@ -431,13 +431,31 @@ return {
                     "{C:inactive}(Currently {C:white,X:mult}X#2#{C:inactive} Mult){}"
                 }
             },
-            j_mxfj_woodenjoker = {
-                name = "Wooden Joker",
+            j_mxfj_woodjoker = {
+                name = "Wood Joker",
                 text = {
                     "Gives {C:white,X:chips}X#1#{} Chips",
                     "for each {C:attention}Wood{} card",
                     "in your {C:attention}full deck{}",
                     "{C:inactive}(Currently {C:white,X:chips}X#2#{C:inactive} Chips){}",
+                }
+            },
+            j_mxfj_lumberjack = {
+                name = "Lumberjack",
+                text = {
+                    "Destroy {C:attention}#1#{} {C:inactive}[#2#]{} cards",
+                    "to create a copy",
+                    "of {C:spectral}Sasquatch{}",
+                    "{C:inactive}(Must have room){}"
+                }
+            },
+            j_mxfj_sculptor = {
+                name = "Sculptor",
+                text = {
+                    "{C:attention}Stone{} cards and",
+                    "{C:attention}Wood{} cards also",
+                    "have the abilities",
+                    "of {C:attention}Wild{} cards",
                 }
             },
             j_mxfj_builder = {
@@ -506,6 +524,16 @@ return {
                     "Used{C:attention} Waxwork Joker{}",
                     "to win on {C:attention}Gold",
                     "{C:attention}Stake{} difficulty",
+                }
+            }
+        },
+        Spectral = {
+            c_mxfj_sasquatch = {
+                name = "Sasquatch",
+                text = {
+                    "Enhances {C:attention}#1#{}",
+                    "selected cards into",
+                    "{C:attention}Wood Cards{}"
                 }
             }
         },
