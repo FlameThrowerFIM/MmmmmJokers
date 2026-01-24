@@ -2285,7 +2285,7 @@ SMODS.Joker {
     blueprint_compat = true,
     perishable_compat = true,
     rarity = 2,
-    cost = 6,
+    cost = 7,
     pos = { x = 8, y = 5 },
     atlas = "mxfj_sprites",
     config = { extra = { counted_destroyed = 0, target_destroyed = 5 } },
