@@ -2405,6 +2405,91 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "climber",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 5,
+    pos = { x = 9, y = 5 },
+    atlas = "mxfj_sprites",
+    config = { extra = { added_mult = 1 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.added_mult } }
+    end,
+    calculate = function(self, card, context)
+        if context.individual and context.cardarea == G.play then
+            context.other_card.ability.perma_mult = (context.other_card.ability.perma_mult or 0) + card.ability.extra.added_mult
+            return { message = localize('k_upgrade_ex'), colour = G.C.MULT }
+        end
+    end
+}
+
+SMODS.Joker {
+    key = "goth",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 1,
+    cost = 5,
+    pos = { x = 0, y = 6 },
+    atlas = "mxfj_sprites",
+    config = { extra = { added_mult = 1, current_mult = 0 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.added_mult, card.ability.extra.current_mult } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and card.ability.extra.current_mult > 0 then return { mult = card.ability.extra.current_mult } end
+
+        if context.before then
+            local seen_cards = {}
+            for _, _card in ipairs(context.scoring_hand) do
+                for k, v in pairs(SMODS.get_enhancements(_card)) do
+                    local is_valid = true
+                    for kk, vv in ipairs(seen_cards) do
+                        if k == vv.key then
+                            is_valid = false; break
+                        end
+                    end
+
+                    if is_valid then seen_cards[#seen_cards + 1] = { key = k, card = _card } end
+                end
+            end
+
+            if #seen_cards > 0 then
+                card.ability.extra.current_mult = card.ability.extra.current_mult + (card.ability.extra.added_mult * #seen_cards)
+
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        local already_juiced = {}
+                        for _, v in ipairs(seen_cards) do
+                            local is_valid = true
+                            for __, vv in ipairs(already_juiced) do
+                                if v == vv then
+                                    is_valid = false; break
+                                end
+                            end
+
+                            if is_valid then
+                                already_juiced[#already_juiced + 1] = v
+                                v.card:juice_up()
+                            end
+                        end
+                        return true
+                    end
+                }))
+
+                return { message = localize("k_upgrade_ex") }
+            end
+        end
+    end,
+    in_pool = function()
+        for _, v in ipairs(G.playing_cards) do
+            if #SMODS.get_enhancements(v) > 0 then return true end
+        end
+        return false
+    end
+}
+
 
 
 SMODS.Joker {

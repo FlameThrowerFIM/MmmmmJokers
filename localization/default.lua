@@ -466,6 +466,23 @@ return {
                     "{C:attention}Wood{} cards",
                 }
             },
+            j_mxfj_climber = {
+                name = "Climber",
+                text = {
+                    "Every played {C:attention}card{}",
+                    "permanently gains",
+                    "{C:mult}+#1#{} Mult when scored"
+                }
+            },
+            j_mxfj_goth = {
+                name = "Goth",
+                text = {
+                    "Gains {C:mult}+#1#{} Mult for each",
+                    "distinct {C:attention}enhancement{}",
+                    "in played hand",
+                    "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}"
+                }
+            },
             j_mxfj_ectocola = {
                 name = "Ecto Cola",
                 text = {
