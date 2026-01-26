@@ -2481,12 +2481,6 @@ SMODS.Joker {
                 return { message = localize("k_upgrade_ex") }
             end
         end
-    end,
-    in_pool = function()
-        for _, v in ipairs(G.playing_cards) do
-            if #SMODS.get_enhancements(v) > 0 then return true end
-        end
-        return false
     end
 }
 
