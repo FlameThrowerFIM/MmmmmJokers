@@ -357,6 +357,16 @@ return {
                     "end of round",
                 }
             },
+            j_mxfj_runitback = {
+                name = "Run It Back",
+                text = {
+                    "Prevents Death if chips",
+                    "scored are at least",
+                    "{C:attention}60%{} of required chips",
+                    "Permanent {C:attention}-#1#{} Ante, {C:blue}-#2#{} hand",
+                    "{S:1.1,C:red,E:2}self destructs{}"
+                }
+            },
             j_mxfj_this_isnt_balatro_jazz = {
                 name = "This Isn't Balatro Jazz",
                 text = {
@@ -591,7 +601,9 @@ return {
             k_mxfj_patched = "Patched!",
             k_mxfj_aesthetic = "Aesthetic!",
             k_mxfk_delivery = "Delivery!",
-            k_mxfk_match_box = "Ran Out!"
+            k_mxfk_match_box = "Ran Out!",
+
+            ph_mxfj_runitback           = "Run It Back!!!",
 
         },
         v_dictionary = {

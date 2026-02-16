@@ -1970,6 +1970,48 @@ SMODS.Joker {
 }
 
 SMODS.Joker {
+    key = "runitback",
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = true,
+    rarity = 3,
+    cost = 8,
+    pos = { x = 2, y = 4 },
+    atlas = "mxfj_sprites",
+    config = { extra = { antes = 1, hands = 1 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.antes, card.ability.extra.hands } }
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and context.game_over and context.main_eval then
+            if G.GAME.chips / G.GAME.blind.chips >= 0.6 then
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        G.hand_text_area.blind_chips:juice_up()
+                        G.hand_text_area.game_chips:juice_up()
+                        play_sound('tarot1')
+                        card:start_dissolve()
+
+                        ease_ante(-card.ability.extra.antes)
+                        G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante or G.GAME.round_resets.ante
+                        G.GAME.round_resets.blind_ante = G.GAME.round_resets.blind_ante - card.ability.extra.antes
+
+                        G.GAME.round_resets.hands = G.GAME.round_resets.hands - card.ability.extra.hands
+                        if G.GAME.current_round.hands_left >= 1 then ease_hands_played(-card.ability.extra.hands) end
+                        return true
+                    end
+                }))
+                return {
+                    message = localize('k_saved_ex'),
+                    saved = 'ph_mxfj_runitback',
+                    colour = G.C.RED
+                }
+            end
+        end
+    end
+}
+
+SMODS.Joker {
     key = "this_isnt_balatro_jazz",
     blueprint_compat = false,
     perishable_compat = true,
