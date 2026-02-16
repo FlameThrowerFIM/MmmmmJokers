@@ -2624,6 +2624,31 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "skater",
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    rarity = 1,
+    cost = 5,
+    atlas = 'mxfj_sprites',
+    pos = { x = 4, y = 6 },
+    config = { extra = { added_mult = 2, current_mult = 0 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.added_mult, card.ability.extra.current_mult } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and card.ability.extra.current_mult > 0 then
+            return { mult = card.ability.extra.current_mult }
+        end
+
+        if context.before and not context.blueprint and next(context.poker_hands['Straight']) then
+            card.ability.extra.current_mult = card.ability.extra.current_mult + card.ability.extra.added_mult
+            return { message = localize('k_upgrade_ex') }
+        end
+    end
+}
+
 
 
 

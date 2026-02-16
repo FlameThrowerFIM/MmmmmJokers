@@ -510,6 +510,15 @@ return {
                     "each Joker {C:attention}purchased{}",
                     "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips){}"
                 }
+            },
+            j_mxfj_skater = {
+                name = "Skater",
+                text = {
+                    "Gains {C:mult}+#1#{} Mult",
+                    "if played hand",
+                    "contains a {C:attention}Straight{}",
+                    "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
+                }
             }
         },
         Partner = {
