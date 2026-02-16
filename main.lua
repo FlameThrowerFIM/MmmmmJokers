@@ -2598,6 +2598,32 @@ SMODS.Joker {
     pools = { ["Food"] = true }
 }
 
+SMODS.Joker {
+    key = "puzzlejoker",
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    rarity = 1,
+    cost = 5,
+    atlas = 'mxfj_sprites',
+    pos = { x = 2, y = 6 },
+    soul_pos = { x = 3, y = 6 },
+    config = { extra = { added_chips = 15, current_chips = 0 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.added_chips, card.ability.extra.current_chips } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and card.ability.extra.current_chips > 0 then
+            return { chips = card.ability.extra.current_chips }
+        end
+
+        if context.buying_card and context.card ~= card and context.card.config.center.set == "Joker" and not context.blueprint then
+            card.ability.extra.current_chips = card.ability.extra.current_chips + card.ability.extra.added_chips
+            return { message = localize('k_upgrade_ex') }
+        end
+    end
+}
+
 
 
 

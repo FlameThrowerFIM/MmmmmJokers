@@ -502,6 +502,14 @@ return {
                     "card is destroyed",
                     "at end of round",
                 }
+            },
+            j_mxfj_puzzlejoker = {
+                name = "Puzzle Joker",
+                text = {
+                    "Gains {C:chips}+#1#{} Chips for",
+                    "each Joker {C:attention}purchased{}",
+                    "{C:inactive}(Currently {C:chips}+#2#{C:inactive} Chips){}"
+                }
             }
         },
         Partner = {
