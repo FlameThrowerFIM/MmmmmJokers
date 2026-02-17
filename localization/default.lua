@@ -529,6 +529,13 @@ return {
                     "contains a {C:attention}Straight{}",
                     "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)"
                 }
+            },
+            j_mxfj_biker = {
+                name = "Biker",
+                text = {
+                    "{C:mult}+#1#{} Mult,",
+                    "{C:red}-#2#{} discards"
+                }
             }
         },
         Partner = {

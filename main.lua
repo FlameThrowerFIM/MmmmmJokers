@@ -2691,6 +2691,34 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "biker",
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    rarity = 3,
+    cost = 7,
+    atlas = 'mxfj_sprites',
+    pos = { x = 5, y = 6 },
+    config = { extra = { mult = 50, minus_discards = 2 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult, card.ability.extra.minus_discards } }
+    end,
+    add_to_deck = function(self, card, from_debuff)
+        G.GAME.round_resets.discards = G.GAME.round_resets.discards - card.ability.extra.minus_discards
+        ease_discard(-card.ability.extra.minus_discards)
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+        G.GAME.round_resets.discards = G.GAME.round_resets.discards + card.ability.extra.minus_discards
+        ease_discard(card.ability.extra.minus_discards)
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            return { mult = card.ability.extra.mult }
+        end
+    end
+}
+
 
 
 
