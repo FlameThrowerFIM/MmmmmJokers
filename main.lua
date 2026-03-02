@@ -2719,6 +2719,38 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "greatdealswaitingforyou",
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    rarity = 1,
+    cost = 5,
+    atlas = 'mxfj_sprites',
+    pos = { x = 6, y = 6 },
+    soul_pos = { x = 7, y = 6 },
+    config = { extra = { odds = 4 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue+1] = G.P_TAGS.tag_coupon
+        local num, denom = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "greatdealswaitingforyou")
+        return { vars = { num, denom } }
+    end,
+    calculate = function(self, card, context)
+        if context.end_of_round and not context.individual and not context.repetition and SMODS.pseudorandom_probability(card, "greatdealswaitingforyou", 1, card.ability.extra.odds) then
+            G.E_MANAGER:add_event(Event({
+                func = (function()
+                    add_tag(Tag('tag_coupon'))
+                    play_sound('generic1', 0.9 + math.random() * 0.1, 0.8)
+                    play_sound('holo1', 1.2 + math.random() * 0.1, 0.4)
+                    card:juice_up()
+                    return true
+                end)
+            }))
+            return { message = "+"..localize { key = "tag_coupon", type = "name_text", set = "Tag" }, colour = G.C.RED }
+        end
+    end
+}
+
 
 
 

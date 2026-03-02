@@ -536,6 +536,14 @@ return {
                     "{C:mult}+#1#{} Mult,",
                     "{C:red}-#2#{} discards"
                 }
+            },
+            j_mxfj_greatdealswaitingforyou = {
+                name = "{s:0.9}[GREAT DEALS WAITING FOR YOU]{}",
+                text = {
+                    "{C:green}#1# in #2#{} chance to",
+                    "create a {C:attention}Coupon Tag{} at",
+                    "the end of the round"
+                }
             }
         },
         Partner = {
