@@ -493,6 +493,14 @@ return {
                     "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult){}"
                 }
             },
+            j_mxfj_chickennoodlesoup = {
+                name = "Chicken Noodle Soup",
+                text = {
+                    "When {C:attention}Blind{} is selected,",
+                    "reduces requirement by {C:attention}#1#%{}",
+                    "Loses {C:red}#2#%{} every round"
+                }
+            },
             j_mxfj_ectocola = {
                 name = "Ecto Cola",
                 text = {

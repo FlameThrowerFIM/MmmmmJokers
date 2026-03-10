@@ -2529,6 +2529,109 @@ SMODS.Joker {
 
 
 SMODS.Joker {
+    key = "chickennoodlesoup",
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 5,
+    pos = { x = 1, y = 6 },
+    atlas = "mxfj_sprites",
+    config = { extra = { current_percent = 40, minus_percent = 5 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.current_percent, card.ability.extra.minus_percent } }
+    end,
+    calculate = function(self, card, context)
+        if context.setting_blind then
+            G.E_MANAGER:add_event(Event({
+                before = 0.1,
+                blocking = true,
+                func = function()
+                    card:juice_up()
+                    play_sound("tarot2", 1.2, 0.6)
+                    return true
+                end,
+            }))
+            mxfj_ease_blind_requirement(-math.ceil(G.GAME.blind.chips * (card.ability.extra.current_percent / 100)))
+            G.E_MANAGER:add_event(Event({
+                trigger = "immediate",
+                func = function()
+                    if G.GAME.chips - G.GAME.blind.chips >= 0 then
+                        G.STATE = G.STATES.NEW_ROUND
+                        G.STATE_COMPLETE = false
+                    end
+                    return true
+                end,
+            }))
+            G.E_MANAGER:add_event(Event({
+                trigger = "immediate",
+                func = function()
+                    card.ability.extra.current_percent = card.ability.extra.current_percent - card.ability.extra.minus_percent
+                    if card.ability.extra.current_percent <= 0 then
+                        SMODS.destroy_cards(card, nil, nil, true)
+                        card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize("k_eaten_ex") })
+                    end
+                    return true
+                end,
+            }))
+        end
+    end
+}
+
+-- Thanks, Yeah! Mostly Artists from Cold Beans!
+function mxfj_ease_blind_requirement(mod_add)
+    local original_chips = G.GAME.blind.original_chips and G.GAME.blind.original_chips > 0 and
+        G.GAME.blind.original_chips or G.GAME.blind.chips
+
+    local current_mult = G.GAME.blind.chips / (original_chips / G.GAME.blind.mult) -- Takes into account previous ease_blind_requirement calls
+    local final_chips = (original_chips / G.GAME.blind.mult) * current_mult + mod_add
+    local chip_mod                                                                 -- iterate over ~120 ticks
+    if type(G.GAME.blind.chips) ~= "table" then
+        chip_mod = math.ceil(math.abs(final_chips - G.GAME.blind.chips) / 120)
+    else
+        chip_mod = ((final_chips - G.GAME.blind.chips):abs() / 120):ceil()
+    end
+    local step = 0
+    if G.GAME.blind.chips < final_chips then
+        G.E_MANAGER:add_event(Event({
+            trigger = "after",
+            blocking = true,
+            func = function()
+                G.GAME.blind.chips = G.GAME.blind.chips + G.SETTINGS.GAMESPEED * chip_mod
+                if G.GAME.blind.chips < final_chips then
+                    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+                    if step % 5 == 0 then play_sound("chips1", 0.8 + (step * 0.005)) end
+                    step = step + 1
+                else
+                    G.GAME.blind.chips = final_chips
+                    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+                    G.GAME.blind:wiggle()
+                    return true
+                end
+            end,
+        }))
+    else
+        G.E_MANAGER:add_event(Event({
+            trigger = "after",
+            blocking = true,
+            func = function()
+                G.GAME.blind.chips = G.GAME.blind.chips - G.SETTINGS.GAMESPEED * chip_mod
+                if G.GAME.blind.chips > final_chips then
+                    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+                    if step % 5 == 0 then play_sound("chips1", 0.8 + (step * 0.005)) end
+                    step = step - 1
+                else
+                    G.GAME.blind.chips = final_chips
+                    G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+                    G.GAME.blind:wiggle()
+                    return true
+                end
+            end,
+        }))
+    end
+end
+
+SMODS.Joker {
     key = "ectocola",
     blueprint_compat = false,
     eternal_compat = false,
@@ -2731,7 +2834,7 @@ SMODS.Joker {
     soul_pos = { x = 7, y = 6 },
     config = { extra = { odds = 4 } },
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue+1] = G.P_TAGS.tag_coupon
+        info_queue[#info_queue + 1] = G.P_TAGS.tag_coupon
         local num, denom = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "greatdealswaitingforyou")
         return { vars = { num, denom } }
     end,
@@ -2746,7 +2849,7 @@ SMODS.Joker {
                     return true
                 end)
             }))
-            return { message = "+"..localize { key = "tag_coupon", type = "name_text", set = "Tag" }, colour = G.C.RED }
+            return { message = "+" .. localize { key = "tag_coupon", type = "name_text", set = "Tag" }, colour = G.C.RED }
         end
     end
 }
