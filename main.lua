@@ -1971,10 +1971,11 @@ SMODS.Joker {
     atlas = "mxfj_multi_sprites",
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
+        local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
         return {
             vars = {
-                localize(G.GAME.current_round.mxfj_broadcaster_card.suit, "suits_plural"),
-                colours = { G.C.SUITS[G.GAME.current_round.mxfj_broadcaster_card.suit] }
+                localize(suit, "suits_plural"),
+                colours = { G.C.SUITS[suit] }
             }
         }
     end,
@@ -1992,7 +1993,7 @@ SMODS.Joker {
             return
         end
         if card and card.ability and card.ability.extra then
-            local suit = G.GAME.current_round.mxfj_broadcaster_card.suit
+            local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
             if not card.ability.extra.state then
                 card.ability.extra.state = suit
                 card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit) or { x = 0, y = 1 })
@@ -2028,7 +2029,7 @@ SMODS.Joker {
         end
     end,
     set_ability = function(self, card, initial, delay_sprites)
-        local suit = G.GAME.current_round.mxfj_broadcaster_card.suit
+        local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
         card.ability.extra.state = suit
         card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit) or { x = 0, y = 1 })
     end
