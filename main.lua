@@ -1902,6 +1902,12 @@ SMODS.Joker {
                 }))
             end
         end
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+        local most_popular = mxfj_cheerleader_most_popular()
+        most_popular = most_popular and most_popular.key or "none"
+        card.ability.extra.state = most_popular
+        card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular) or { x = 0, y = 1 })
     end
 }
 
@@ -1945,8 +1951,117 @@ mxfj_cheerleader_find_pos = function(most_popular)
         ["bunc_Halberds"] = { x = 1, y = 2 },
         ["paperback_Crowns"] = { x = 2, y = 2 },
         ["paperback_Stars"] = { x = 3, y = 2 },
+        ["minty_3s"] = { x = 4, y = 2 },
     }
     return conversions[most_popular]
+end
+
+
+
+
+
+
+SMODS.Joker {
+    key = "broadcaster",
+    blueprint_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 6,
+    pos = { x = 1, y = 3 },
+    atlas = "mxfj_multi_sprites",
+    config = { extra = {} },
+    loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                localize(G.GAME.current_round.mxfj_broadcaster_card.suit, "suits_plural"),
+                colours = { G.C.SUITS[G.GAME.current_round.mxfj_broadcaster_card.suit] }
+            }
+        }
+    end,
+    calculate = function(self, card, context)
+        if context.repetition and context.cardarea == G.play and context.other_card:is_suit(G.GAME.current_round.mxfj_broadcaster_card.suit) then
+            return { repetitions = 1 }
+        end
+
+        if context.end_of_round and not context.individual and not context.repetition and not context.blueprint then
+            return { message = localize("k_reset"), colour = G.C.RED }
+        end
+    end,
+    update = function(self, card, dt)
+        if not self.discovered and not card.params.bypass_discovery_center then
+            return
+        end
+        if card and card.ability and card.ability.extra then
+            local suit = G.GAME.current_round.mxfj_broadcaster_card.suit
+            if not card.ability.extra.state then
+                card.ability.extra.state = suit
+                card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit) or { x = 0, y = 1 })
+                return
+            end
+            if suit ~= card.ability.extra.state then
+                card.ability.extra.state = suit
+
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.15,
+                    func = function()
+                        card:flip(); play_sound('card1', 1); card:juice_up(0.3, 0.3); return true
+                    end
+                }))
+                delay(0.2)
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.1,
+                    func = function()
+                        card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit ~= "none" and suit) or { x = 0, y = 1 })
+                        return true
+                    end
+                }))
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.15,
+                    func = function()
+                        card:flip(); play_sound('tarot2', 1, 0.6); return true
+                    end
+                }))
+            end
+        end
+    end,
+    set_ability = function(self, card, initial, delay_sprites)
+        local suit = G.GAME.current_round.mxfj_broadcaster_card.suit
+        card.ability.extra.state = suit
+        card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit) or { x = 0, y = 1 })
+    end
+}
+
+mxfj_broadcaster_find_pos = function(suit)
+    if not suit then return end
+    local conversions = {
+        ["Clubs"] = { x = 1, y = 3 },
+        ["Diamonds"] = { x = 2, y = 3 },
+        ["Hearts"] = { x = 3, y = 3 },
+        ["Spades"] = { x = 4, y = 3 },
+        ["bunc_Fleurons"] = { x = 0, y = 4 },
+        ["bunc_Halberds"] = { x = 1, y = 4 },
+        ["paperback_Stars"] = { x = 2, y = 4 },
+        ["paperback_Crowns"] = { x = 3, y = 4 },
+        ["minty_3s"] = { x = 4, y = 4 },
+    }
+    return conversions[suit]
+end
+
+function SMODS.current_mod.reset_game_globals(run_start)
+    G.GAME.current_round.mxfj_broadcaster_card = G.GAME.current_round.mxfj_broadcaster_card or { suit = "Clubs" }
+    local valid_cards_broadcaster = {}
+    for i, j in ipairs(G.playing_cards) do
+        if not SMODS.has_no_suit(j) and not j:is_suit(G.GAME.current_round.mxfj_broadcaster_card.suit) then
+            valid_cards_broadcaster[#valid_cards_broadcaster + 1] = j
+        end
+    end
+    if next(valid_cards_broadcaster) then
+        local chosen_card = pseudorandom_element(valid_cards_broadcaster, pseudoseed("broadcaster" .. G.GAME.round_resets.ante))
+        G.GAME.current_round.mxfj_broadcaster_card.suit = chosen_card.base.suit
+    end
 end
 
 SMODS.Joker {

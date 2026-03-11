@@ -348,6 +348,14 @@ return {
                     "{C:inactive}(Currently {C:attention}#2#{C:inactive}, {C:mult}+#3#{C:inactive} Mult){}",
                 }
             },
+            j_mxfj_broadcaster = {
+                name = "Broadcaster",
+                text = {
+                    "Retrigger each played",
+                    "card with {V:1}#1#{} suit,",
+                    "{s:0.8}suit changes at end of round{}"
+                }
+            },
             j_mxfj_cyberpunk_joker = {
                 name = "Cyberpunk Joker",
                 text = {
