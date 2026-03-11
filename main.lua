@@ -2868,7 +2868,7 @@ SMODS.Joker {
     atlas = 'mxfj_sprites',
     pos = { x = 2, y = 6 },
     soul_pos = { x = 3, y = 6 },
-    config = { extra = { added_chips = 15, current_chips = 0 } },
+    config = { extra = { added_chips = 10, current_chips = 0 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.added_chips, card.ability.extra.current_chips } }
     end,
