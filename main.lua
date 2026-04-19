@@ -2972,7 +2972,41 @@ SMODS.Joker {
 
 
 
+SMODS.Joker {
+    key = "vandalizedjoker",
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    rarity = 1,
+    cost = 5,
+    atlas = 'mxfj_sprites',
+    pos = { x = 1, y = 7 },
+    soul_pos = { x = 2, y = 7 },
+    config = { extra = { odds = 2, current_chips = 0 } },
+    loc_vars = function(self, info_queue, card)
+        local num, denom = SMODS.get_probability_vars(card, 1, card.ability.extra.odds, "vandalizedjoker")
+        return { vars = { num, denom, card.ability.extra.current_chips } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main and card.ability.extra.current_chips > 0 then return { chips = card.ability.extra.current_chips } end
 
+        if context.remove_playing_cards then
+            local upgraded = 0
+            for _, v in ipairs(context.removed) do
+                if SMODS.pseudorandom_probability(card, "vandalizedjoker", 1, card.ability.extra.odds) then
+                    card.ability.extra.current_chips = card.ability.extra.current_chips + v:get_chip_bonus()
+                    upgraded = upgraded + 1
+                end
+            end
+
+            if upgraded == 1 then
+                return { message = localize("k_upgrade_ex") }
+            elseif upgraded > 0 then
+                return { message = localize { type = "variable", key = "v_upgrade_ex", vars = { upgraded } } }
+            end
+        end
+    end
+}
 
 
 

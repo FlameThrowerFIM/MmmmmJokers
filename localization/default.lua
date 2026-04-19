@@ -560,6 +560,32 @@ return {
                     "create a {C:attention}Coupon Tag{} at",
                     "the end of the round"
                 }
+            },
+            j_mxfj_blacklisted = {
+                name = "Blacklisted",
+                text = {
+                    "{C:blue}Common{} {C:attention}Jokers{} and",
+                    "{C:attention}Jokers{} {C:money}sold{} do not",
+                    "reappear in the {C:money}shop{}"
+                }
+            },
+            j_mxfj_cherries = {
+                name = "Cherries",
+                text = {
+                    "{C:attention}+1{} card selection",
+                    "when using {C:tarot}Tarot{}",
+                    "and {C:spectral}Spectral{} cards",
+                    "{C:inactive}(Uses remaining: {C:attention}#1#{C:inactive}){}"
+                }
+            },
+            j_mxfj_vandalizedjoker = {
+                name = "Vandalized Joker",
+                text = {
+                    "When a playing card is {C:red}destroyed{},",
+                    "{C:green}#1# in #2#{} chance for this Joker",
+                    "to gain its {C:chips}Chips{} value",
+                    "{C:inactive}(Currently {C:chips}+#3#{C:inactive} Chips){}"
+                }
             }
         },
         Partner = {
@@ -640,7 +666,8 @@ return {
         v_dictionary = {
             a_mxfj_plus_joker = "+#1# Joker",
             a_mxfj_plus_jokers = "+#1# Jokers",
-            a_mxfj_dollars_minus = "-$#1#"
+            a_mxfj_dollars_minus = "-$#1#",
+            v_upgrade_ex = "Upgrade! X#1#"
         }
     }
 }
