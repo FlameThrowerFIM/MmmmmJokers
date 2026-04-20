@@ -647,7 +647,8 @@ if Partner_API then
             if context.cardarea == G.play and context.other_card == context.scoring_hand[#context.scoring_hand] and context.repetition then
                 if context.other_card.seal then
                     return {
-                        repetitions = card.ability.extra.repetitions + (next(SMODS.find_card("j_mxfj_waxwork")) and card.ability.extra.added_repetitions or 0)
+                        repetitions = card.ability.extra.repetitions +
+                            (next(SMODS.find_card("j_mxfj_waxwork")) and card.ability.extra.added_repetitions or 0)
                     }
                 end
             end
@@ -1907,6 +1908,9 @@ SMODS.Joker {
         local most_popular = mxfj_cheerleader_most_popular()
         most_popular = most_popular and most_popular.key or "none"
         card.ability.extra.state = most_popular
+        if not self.discovered and not card.params.bypass_discovery_center then
+            return
+        end
         card.children.center:set_sprite_pos(mxfj_cheerleader_find_pos(most_popular) or { x = 0, y = 1 })
     end
 }
@@ -1971,7 +1975,8 @@ SMODS.Joker {
     atlas = "mxfj_multi_sprites",
     config = { extra = {} },
     loc_vars = function(self, info_queue, card)
-        local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
+        local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and
+            G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
         return {
             vars = {
                 localize(suit, "suits_plural"),
@@ -1993,7 +1998,8 @@ SMODS.Joker {
             return
         end
         if card and card.ability and card.ability.extra then
-            local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
+            local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and
+                G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
             if not card.ability.extra.state then
                 card.ability.extra.state = suit
                 card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit) or { x = 0, y = 1 })
@@ -2014,7 +2020,8 @@ SMODS.Joker {
                     trigger = 'after',
                     delay = 0.1,
                     func = function()
-                        card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit ~= "none" and suit) or { x = 0, y = 1 })
+                        card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit ~= "none" and suit) or
+                            { x = 0, y = 1 })
                         return true
                     end
                 }))
@@ -2029,8 +2036,12 @@ SMODS.Joker {
         end
     end,
     set_ability = function(self, card, initial, delay_sprites)
-        local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
+        local suit = G.GAME and G.GAME.current_round and G.GAME.current_round.mxfj_broadcaster_card and
+            G.GAME.current_round.mxfj_broadcaster_card.suit or "Clubs"
         card.ability.extra.state = suit
+        if not self.discovered and not card.params.bypass_discovery_center then
+            return
+        end
         card.children.center:set_sprite_pos(mxfj_broadcaster_find_pos(suit) or { x = 0, y = 1 })
     end
 }
@@ -2060,7 +2071,8 @@ function SMODS.current_mod.reset_game_globals(run_start)
         end
     end
     if next(valid_cards_broadcaster) then
-        local chosen_card = pseudorandom_element(valid_cards_broadcaster, pseudoseed("broadcaster" .. G.GAME.round_resets.ante))
+        local chosen_card = pseudorandom_element(valid_cards_broadcaster,
+            pseudoseed("broadcaster" .. G.GAME.round_resets.ante))
         G.GAME.current_round.mxfj_broadcaster_card.suit = chosen_card.base.suit
     end
 end
@@ -2174,7 +2186,12 @@ SMODS.Joker {
         return { vars = { card.ability.extra.added_xmult, card.ability.extra.current_xmult } }
     end,
     calculate = function(self, card, context)
-        if context.joker_main and card.ability.extra.current_xmult > 1 then return { xmult = card.ability.extra.current_xmult } end
+        if context.joker_main and card.ability.extra.current_xmult > 1 then
+            return {
+                xmult = card.ability.extra
+                    .current_xmult
+            }
+        end
 
         if context.ending_shop and G.GAME.mxfj_no_money_spent and not context.blueprint then
             card.ability.extra.current_xmult = card.ability.extra.current_xmult + card.ability.extra.added_xmult
@@ -2245,9 +2262,12 @@ SMODS.calculate_individual_effect = function(effect, scored_card, key, amount, f
 
         if not effect.remove_default_message then
             if from_edition then
-                card_eval_status_text(scored_card, 'jokers', nil, percent, nil, { message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true })
+                card_eval_status_text(scored_card, 'jokers', nil, percent, nil,
+                    { message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true })
             else
-                card_eval_status_text(effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil, percent, nil, { message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true })
+                card_eval_status_text(
+                    effect.message_card or effect.juice_card or scored_card or effect.card or effect.focus, 'extra', nil,
+                    percent, nil, { message = text, colour = { 0.8, 0.45, 0.85, 1 }, sound = 'gong', edition = true })
             end
         end
 
@@ -2324,7 +2344,12 @@ SMODS.Joker {
         return { vars = { card.ability.extra.added_chips, card.ability.extra.current_chips } }
     end,
     calculate = function(self, card, context)
-        if context.joker_main and card.ability.extra.current_chips > 0 then return { chips = card.ability.extra.current_chips } end
+        if context.joker_main and card.ability.extra.current_chips > 0 then
+            return {
+                chips = card.ability.extra
+                    .current_chips
+            }
+        end
 
         if context.cardarea == G.play and context.individual and not context.blueprint and (SMODS.has_no_rank(context.other_card) or SMODS.has_no_suit(context.other_card)) then
             card.ability.extra.current_chips = card.ability.extra.current_chips + card.ability.extra.added_chips
@@ -2456,14 +2481,16 @@ SMODS.Joker {
             card.ability.extra.counted_destroyed = card.ability.extra.counted_destroyed + #context.removed
             local counted_created = 0
             while card.ability.extra.counted_destroyed >= card.ability.extra.target_destroyed do
-                card.ability.extra.counted_destroyed = card.ability.extra.counted_destroyed - card.ability.extra.target_destroyed
+                card.ability.extra.counted_destroyed = card.ability.extra.counted_destroyed -
+                    card.ability.extra.target_destroyed
 
                 if count_consumables() < G.consumeables.config.card_limit then
                     G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
                     counted_created = counted_created + 1
                     G.E_MANAGER:add_event(Event({
                         func = function()
-                            local new_card = create_card("Spectral", G.consumables, nil, nil, nil, nil, "c_mxfj_sasquatch", "lumberjack")
+                            local new_card = create_card("Spectral", G.consumables, nil, nil, nil, nil,
+                                "c_mxfj_sasquatch", "lumberjack")
                             new_card:add_to_deck()
                             G.consumeables:emplace(new_card)
                             G.GAME.consumeable_buffer = 0
@@ -2477,7 +2504,10 @@ SMODS.Joker {
             if counted_created > 0 then
                 return { message = "+" .. counted_created .. " Sasquatch", colour = G.C.SECONDARY_SET.Spectral }
             else
-                return { message = (card.ability.extra.target_destroyed - card.ability.extra.counted_destroyed) .. "/" .. card.ability.extra.target_destroyed }
+                return {
+                    message = (card.ability.extra.target_destroyed - card.ability.extra.counted_destroyed) ..
+                        "/" .. card.ability.extra.target_destroyed
+                }
             end
         end
     end
@@ -2530,7 +2560,10 @@ end
 
 local is_suit_ref = Card.is_suit
 function Card:is_suit(suit, bypass_debuff, flush_calc)
-    if not next(SMODS.find_card("j_mxfj_sculptor")) or not (SMODS.has_enhancement(self, "m_stone") or SMODS.has_enhancement(self, "m_mxfj_wood")) then return is_suit_ref(self, suit, bypass_debuff, flush_calc) end
+    if not next(SMODS.find_card("j_mxfj_sculptor")) or not (SMODS.has_enhancement(self, "m_stone") or SMODS.has_enhancement(self, "m_mxfj_wood")) then
+        return
+            is_suit_ref(self, suit, bypass_debuff, flush_calc)
+    end
 
     return not flush_calc or not self.debuff
 end
@@ -2577,7 +2610,8 @@ SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if context.individual and context.cardarea == G.play then
-            context.other_card.ability.perma_mult = (context.other_card.ability.perma_mult or 0) + card.ability.extra.added_mult
+            context.other_card.ability.perma_mult = (context.other_card.ability.perma_mult or 0) +
+                card.ability.extra.added_mult
             return { message = localize('k_upgrade_ex'), colour = G.C.MULT }
         end
     end
@@ -2596,7 +2630,12 @@ SMODS.Joker {
         return { vars = { card.ability.extra.added_mult, card.ability.extra.current_mult } }
     end,
     calculate = function(self, card, context)
-        if context.joker_main and card.ability.extra.current_mult > 0 then return { mult = card.ability.extra.current_mult } end
+        if context.joker_main and card.ability.extra.current_mult > 0 then
+            return {
+                mult = card.ability.extra
+                    .current_mult
+            }
+        end
 
         if context.before then
             local seen_cards = {}
@@ -2614,7 +2653,8 @@ SMODS.Joker {
             end
 
             if #seen_cards > 0 then
-                card.ability.extra.current_mult = card.ability.extra.current_mult + (card.ability.extra.added_mult * #seen_cards)
+                card.ability.extra.current_mult = card.ability.extra.current_mult +
+                    (card.ability.extra.added_mult * #seen_cards)
 
                 G.E_MANAGER:add_event(Event({
                     func = function()
@@ -2682,7 +2722,8 @@ SMODS.Joker {
             G.E_MANAGER:add_event(Event({
                 trigger = "immediate",
                 func = function()
-                    card.ability.extra.current_percent = card.ability.extra.current_percent - card.ability.extra.minus_percent
+                    card.ability.extra.current_percent = card.ability.extra.current_percent -
+                        card.ability.extra.minus_percent
                     if card.ability.extra.current_percent <= 0 then
                         SMODS.destroy_cards(card, nil, nil, true)
                         card_eval_status_text(card, 'extra', nil, nil, nil, { message = localize("k_eaten_ex") })
@@ -2699,9 +2740,10 @@ function mxfj_ease_blind_requirement(mod_add)
     local original_chips = G.GAME.blind.original_chips and G.GAME.blind.original_chips > 0 and
         G.GAME.blind.original_chips or G.GAME.blind.chips
 
-    local current_mult = G.GAME.blind.chips / (original_chips / G.GAME.blind.mult) -- Takes into account previous ease_blind_requirement calls
+    local current_mult = G.GAME.blind.chips /
+        (original_chips / G.GAME.blind.mult) -- Takes into account previous ease_blind_requirement calls
     local final_chips = (original_chips / G.GAME.blind.mult) * current_mult + mod_add
-    local chip_mod                                                                 -- iterate over ~120 ticks
+    local chip_mod                       -- iterate over ~120 ticks
     if type(G.GAME.blind.chips) ~= "table" then
         chip_mod = math.ceil(math.abs(final_chips - G.GAME.blind.chips) / 120)
     else
@@ -2770,7 +2812,8 @@ SMODS.Joker {
             end
             return {
                 message = (card.ability.extra.current_rounds < card.ability.extra.rounds_required) and
-                    (card.ability.extra.current_rounds .. '/' .. card.ability.extra.rounds_required) or localize('k_active_ex'),
+                    (card.ability.extra.current_rounds .. '/' .. card.ability.extra.rounds_required) or
+                    localize('k_active_ex'),
                 colour = G.C.FILTER
             }
         end
@@ -2969,8 +3012,134 @@ SMODS.Joker {
         end
     end
 }
+--[[
+SMODS.Joker {
+    key = "blacklisted",
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    atlas = 'mxfj_sprites',
+    pos = { x = 8, y = 6 },
+    soul_pos = { x = 9, y = 6 },
+    config = { extra = { blacklist = {} } },
+    calculate = function(self, card, context)
+        if context.selling_card and context.card.config.center.set == "Joker" and context.card ~= card and not card.getting_sliced then
+            card.ability.extra.blacklist[#card.ability.extra.blacklist + 1] = context.card.config.center.key
+        end
+    end
+}
 
+local main_menu_ref = Game.main_menu
+Game.main_menu = function(change_context)
+    local ret = main_menu_ref(change_context)
 
+    for k, v in pairs(G.P_CENTERS) do
+        if v.set == "Joker" then
+            v.in_pool = v.in_pool or function()
+                return true
+            end
+
+            v.set_ability = v.set_ability or function(self, card, initial, delay_sprites) end
+            local my_key = v.key
+
+            local in_pool_ref = v.in_pool
+            v.in_pool = function()
+                local ret2 = in_pool_ref()
+                if not ret then return ret2 end
+                local blacklisted = false
+                if next(SMODS.find_card("j_mxfj_blacklisted")) then
+                    for _, card in ipairs(SMODS.find_card("j_mxfj_blacklisted")) do
+                        for _, vv in ipairs(card.ability.extra.blacklist or {}) do
+                            if vv == my_key then return false end
+                        end
+                    end
+                end
+                return ret2
+            end
+
+            local set_ability_ref = v.set_ability
+            v.set_ability = function(self, card, initial, delay_sprites)
+                if v.rarity == 1 and next(SMODS.find_card("j_mxfj_blacklisted")) then
+                    for _, card in ipairs(SMODS.find_card("j_mxfj_blacklisted")) do
+                        if card.ability.extra.blacklist and (v.area == G.shop_jokers or v.area == G.pack_cards) then print(v.area == G.shop_jokers) print(v.area == G.pack_cards); card.ability.extra.blacklist[#card.ability.extra.blacklist + 1] = my_key end
+                    end
+                end
+                return set_ability_ref(self, card, initial, delay_sprites)
+            end
+        end
+    end
+
+    return ret
+end
+
+SMODS.Joker {
+    key = "cherries",
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 6,
+    atlas = 'mxfj_sprites',
+    pos = { x = 0, y = 7 },
+    config = { extra = { uses = 3 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.uses } }
+    end,
+    calculate = function(self, card, context)
+        if context.using_consumeable and context.consumeable.config.center.config and context.consumeable.config.center.mxfj_cherries_edited then
+            card.ability.extra.uses = card.ability.extra.uses - 1
+            if card.ability.extra.uses <= 0 then
+                SMODS.destroy_cards(card, nil, nil, true)
+                return { message = localize("k_eaten_ex"), colour = G.C.RED }
+            else
+                return { message = card.ability.extra.uses.."" }
+            end
+        end
+    end,
+
+    add_to_deck = function(self, card, from_debuff)
+        for _, v in ipairs(G.consumeables.cards) do
+            if (v.ability.consumeable.max_highlighted or v.ability.max_highlighted) and v.config.center.mxfj_cherries_edited then
+                v.ability.max_highlighted = v.ability.max_highlighted + 1
+                v.ability.consumeable.max_highlighted = v.ability.consumeable.max_highlighted + 1
+            end
+        end
+    end,
+
+    remove_from_deck = function(self, card, from_debuff)
+        for _, v in ipairs(G.consumeables.cards) do
+            if (v.ability.consumeable.max_highlighted or v.ability.max_highlighted) and v.config.center.mxfj_cherries_edited then
+                v.ability.max_highlighted = v.ability.max_highlighted - 1
+                v.ability.consumeable.max_highlighted = v.ability.consumeable.max_highlighted - 1
+            end
+        end
+    end
+}
+
+local main_menu_ref = Game.main_menu
+Game.main_menu = function(change_context)
+    local ret = main_menu_ref(change_context)
+
+    for k, v in pairs(G.P_CENTERS) do
+        if (v.set == "Tarot" or v.set == "Spectral") and v.config and v.config.max_highlighted then
+            v.mxfj_cherries_edited = true
+
+            v.set_ability = v.set_ability or function(self, card, initial, delay_sprites) end
+            local set_ability_ref = v.set_ability
+            v.set_ability = function(self, card, initial, delay_sprites)
+                local ret = set_ability_ref(self, card, initial, delay_sprites)
+                v.config.max_highlighted = v.config.max_highlighted + #SMODS.find_card("j_mxfj_cherries")
+                return ret
+            end
+        end
+    end
+
+    return ret
+end
+
+]] --
 
 SMODS.Joker {
     key = "vandalizedjoker",
