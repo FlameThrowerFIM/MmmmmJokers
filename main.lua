@@ -3162,7 +3162,7 @@ SMODS.Joker {
         if context.remove_playing_cards then
             local upgraded = 0
             for _, v in ipairs(context.removed) do
-                if SMODS.pseudorandom_probability(card, "vandalizedjoker", 1, card.ability.extra.odds) then
+                if v:get_chip_bonus() > 0 and SMODS.pseudorandom_probability(card, "vandalizedjoker", 1, card.ability.extra.odds) then
                     card.ability.extra.current_chips = card.ability.extra.current_chips + v:get_chip_bonus()
                     upgraded = upgraded + 1
                 end
