@@ -586,6 +586,15 @@ return {
                     "to gain its {C:chips}Chips{} value",
                     "{C:inactive}(Currently {C:chips}+#3#{C:inactive} Chips){}"
                 }
+            },
+            j_mxfj_revolt = {
+                name = "Revolt",
+                text = {
+                    "Retriggers all",
+                    "played {C:attention}number{}",
+                    "cards, {C:red}debuffs{}",
+                    "all {C:attention}face{} cards"
+                }
             }
         },
         Partner = {

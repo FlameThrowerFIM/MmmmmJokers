@@ -3177,6 +3177,41 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "revolt",
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    atlas = 'mxfj_sprites',
+    pos = { x = 3, y = 7 },
+    config = { extra = {} },
+    add_to_deck = function(self, card, from_debuff)
+        card.ability.extra.added_id = (G.GAME.mxfj_revolt_counter or 0) + 1
+        G.GAME.mxfj_revolt_counter = card.ability.extra.added_id
+        for _, v in ipairs(G.playing_cards) do
+            if v:is_face(true) then SMODS.debuff_card(v, true, "mxfj_revolt_"..card.ability.extra.added_id) end
+        end
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+        for _, v in ipairs(G.playing_cards) do
+            if v:is_face(true) then SMODS.debuff_card(v, false, "mxfj_revolt_"..card.ability.extra.added_id) end
+        end
+    end,
+    calculate = function(self, card, context)
+        if context.repetition and context.cardarea == G.play and not context.other_card:is_face() then
+            return { repetitions = 1 }
+        end
+
+        if context.playing_card_added then
+            for _, v in ipairs(context.cards) do
+                if v:is_face(true) then SMODS.debuff_card(v, true, "mxfj_revolt_"..card.ability.extra.added_id) end
+            end
+        end
+    end
+}
+
 
 
 
