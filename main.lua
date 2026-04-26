@@ -2632,23 +2632,24 @@ SMODS.Joker {
     calculate = function(self, card, context)
         if context.joker_main and card.ability.extra.current_mult > 0 then
             return {
-                mult = card.ability.extra
-                    .current_mult
+                mult = card.ability.extra.current_mult
             }
         end
 
         if context.before then
             local seen_cards = {}
             for _, _card in ipairs(context.scoring_hand) do
-                for k, v in pairs(SMODS.get_enhancements(_card)) do
-                    local is_valid = true
-                    for kk, vv in ipairs(seen_cards) do
-                        if k == vv.key then
-                            is_valid = false; break
+                if not _card.debuff then
+                    for k, v in pairs(SMODS.get_enhancements(_card)) do
+                        local is_valid = true
+                        for kk, vv in ipairs(seen_cards) do
+                            if k == vv.key then
+                                is_valid = false; break
+                            end
                         end
-                    end
 
-                    if is_valid then seen_cards[#seen_cards + 1] = { key = k, card = _card } end
+                        if is_valid then seen_cards[#seen_cards + 1] = { key = k, card = _card } end
+                    end
                 end
             end
 
@@ -2743,7 +2744,7 @@ function mxfj_ease_blind_requirement(mod_add)
     local current_mult = G.GAME.blind.chips /
         (original_chips / G.GAME.blind.mult) -- Takes into account previous ease_blind_requirement calls
     local final_chips = (original_chips / G.GAME.blind.mult) * current_mult + mod_add
-    local chip_mod                       -- iterate over ~120 ticks
+    local chip_mod                           -- iterate over ~120 ticks
     if type(G.GAME.blind.chips) ~= "table" then
         chip_mod = math.ceil(math.abs(final_chips - G.GAME.blind.chips) / 120)
     else
@@ -3157,7 +3158,8 @@ SMODS.Joker {
         return { vars = { num, denom, card.ability.extra.current_chips } }
     end,
     calculate = function(self, card, context)
-        if context.joker_main and card.ability.extra.current_chips > 0 then return { chips = card.ability.extra.current_chips } end
+        if context.joker_main and card.ability.extra.current_chips > 0 then return { chips = card.ability.extra
+            .current_chips } end
 
         if context.remove_playing_cards then
             local upgraded = 0
@@ -3191,12 +3193,12 @@ SMODS.Joker {
         card.ability.extra.added_id = (G.GAME.mxfj_revolt_counter or 0) + 1
         G.GAME.mxfj_revolt_counter = card.ability.extra.added_id
         for _, v in ipairs(G.playing_cards) do
-            if v:is_face(true) then SMODS.debuff_card(v, true, "mxfj_revolt_"..card.ability.extra.added_id) end
+            if v:is_face(true) then SMODS.debuff_card(v, true, "mxfj_revolt_" .. card.ability.extra.added_id) end
         end
     end,
     remove_from_deck = function(self, card, from_debuff)
         for _, v in ipairs(G.playing_cards) do
-            if v:is_face(true) then SMODS.debuff_card(v, false, "mxfj_revolt_"..card.ability.extra.added_id) end
+            if v:is_face(true) then SMODS.debuff_card(v, false, "mxfj_revolt_" .. card.ability.extra.added_id) end
         end
     end,
     calculate = function(self, card, context)
@@ -3206,7 +3208,7 @@ SMODS.Joker {
 
         if context.playing_card_added then
             for _, v in ipairs(context.cards) do
-                if v:is_face(true) then SMODS.debuff_card(v, true, "mxfj_revolt_"..card.ability.extra.added_id) end
+                if v:is_face(true) then SMODS.debuff_card(v, true, "mxfj_revolt_" .. card.ability.extra.added_id) end
             end
         end
     end
