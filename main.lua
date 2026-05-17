@@ -3158,8 +3158,12 @@ SMODS.Joker {
         return { vars = { num, denom, card.ability.extra.current_chips } }
     end,
     calculate = function(self, card, context)
-        if context.joker_main and card.ability.extra.current_chips > 0 then return { chips = card.ability.extra
-            .current_chips } end
+        if context.joker_main and card.ability.extra.current_chips > 0 then
+            return {
+                chips = card.ability.extra
+                    .current_chips
+            }
+        end
 
         if context.remove_playing_cards then
             local upgraded = 0
@@ -3213,6 +3217,45 @@ SMODS.Joker {
         end
     end
 }
+
+
+
+
+
+
+
+
+
+
+
+SMODS.Joker {
+    key = "flame",
+    unlocked = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    rarity = 4,
+    cost = 20,
+    atlas = 'mxfj_sprites',
+    pos = { x = 4, y = 7 },
+    soul_pos = { x = 5, y = 7 },
+    config = { extra = { repetitions = 2 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.repetitions } }
+    end,
+    calculate = function(self, card, context)
+        if context.repetition and context.cardarea == G.play then
+            return { repetitions = card.ability.extra.repetitions }
+        end
+    end
+}
+
+
+
+
+
+
+
 
 
 

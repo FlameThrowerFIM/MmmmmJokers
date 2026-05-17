@@ -595,6 +595,16 @@ return {
                     "cards, {C:red}debuffs{}",
                     "all {C:attention}face{} cards"
                 }
+            },
+            j_mxfj_flame = {
+                name = "FlameThrowerFIM",
+                text = {
+                    "Retriggers all played cards",
+                    "{C:attention}#1#{} additional times",
+                },
+                unlock = {
+                    "{E:1,s:1.3}?????{}",
+                }
             }
         },
         Partner = {
