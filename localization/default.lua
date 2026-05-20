@@ -596,6 +596,15 @@ return {
                     "all {C:attention}face{} cards"
                 }
             },
+            j_mxfj_generatedjoker = {
+                name = "Generated Joker",
+                text = {
+                    "When a playing card is {C:red}destroyed{},",
+                    "create a {C:attention}Wild{} card and draw it to hand",
+                    "{C:green}#1# in #2#{} chance card has a random {C:attention}edition{}",
+                    "{C:green}#3# in #4#{} chance card has a random {C:attention}seal{}"
+                }
+            },
             j_mxfj_flame = {
                 name = "FlameThrowerFIM",
                 text = {

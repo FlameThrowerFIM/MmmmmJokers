@@ -3218,6 +3218,47 @@ SMODS.Joker {
     end
 }
 
+SMODS.Joker {
+    key = "generatedjoker",
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    atlas = 'mxfj_sprites',
+    pos = { x = 6, y = 7 },
+    config = { extra = { edition_odds = 4, seal_odds = 4 } },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.m_wild
+        local num_a, denom_a = SMODS.get_probability_vars(card, 1, card.ability.extra.edition_odds, "generatedjoker_ed")
+        local num_b, denom_b = SMODS.get_probability_vars(card, 1, card.ability.extra.seal_odds, "generatedjoker_seal")
+        return { vars = { num_a, denom_a, num_b, denom_b } }
+    end,
+    calculate = function(self, card, context)
+        if context.remove_playing_cards then
+            for _, v in ipairs(context.removed) do
+                local _card = context.blueprint_card or card
+                G.E_MANAGER:add_event(Event({
+                    func = function()
+                        local edition
+                        local seal
+                        if SMODS.pseudorandom_probability(card, "generatedjoker_ed", 1, card.ability.extra.edition_odds) then
+                            edition = SMODS.poll_edition({ key = "generatedjoker_ed", no_negative = true, guaranteed = true })
+                        end
+                        if SMODS.pseudorandom_probability(card, "generatedjoker_seal", 1, card.ability.extra.seal_odds) then
+                            seal = SMODS.poll_seal({ key = "generatedjoker_seal", guaranteed = true })
+                        end
+                        local new_card = SMODS.add_card({ set = "Enhanced", enhancement = "m_wild", edition = edition, seal = seal })
+                        if G.GAME.blind then G.GAME.blind:debuff_card(new_card) end
+                        _card:juice_up()
+                        return true
+                    end
+                }))
+            end
+        end
+    end
+}
+
 
 
 
