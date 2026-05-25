@@ -578,6 +578,13 @@ return {
                     "{C:inactive}(Uses remaining: {C:attention}#1#{C:inactive}){}"
                 }
             },
+            j_mxfj_starfruit = {
+                name = "Starfruit",
+                text = {
+                    "Retriggers the next {C:attention}#1#{}",
+                    "used {C:planet}Planet{} cards"
+                }
+            },
             j_mxfj_vandalizedjoker = {
                 name = "Vandalized Joker",
                 text = {

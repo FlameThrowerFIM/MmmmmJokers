@@ -3143,6 +3143,33 @@ end
 ]] --
 
 SMODS.Joker {
+    key = "starfruit",
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    rarity = 2,
+    cost = 7,
+    atlas = 'mxfj_sprites',
+    pos = { x = 7, y = 7 },
+    config = { extra = { uses = 5 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.uses } }
+    end,
+    calculate = function(self, card, context)
+        if context.using_consumeable and context.consumeable.config.center.set == "Planet" and context.consumeable.ability.hand_type then
+            card.ability.extra.uses = card.ability.extra.uses - 1
+            SMODS.upgrade_poker_hands({ hands = context.consumeable.ability.hand_type, from = card })
+            if card.ability.extra.uses <= 0 then
+                SMODS.destroy_cards(card, nil, nil, true)
+                return { message = localize("k_eaten_ex"), colour = G.C.RED }
+            else
+                return { message = card.ability.extra.uses.."" }
+            end
+        end
+    end
+}
+
+SMODS.Joker {
     key = "vandalizedjoker",
     blueprint_compat = true,
     eternal_compat = true,
